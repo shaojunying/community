@@ -26,6 +26,4 @@ public interface UserMapper {
 
     int updatePassword(int id, String password);
 
-    // TODO: 测试类没有写完
-
 }
