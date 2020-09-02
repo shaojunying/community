@@ -57,6 +57,7 @@ public class UserMapperTest {
         User user = userMapper.selectByName("test");
         Assert.assertNotNull(user);
         int i = userMapper.updatePassword(user.getId(), "newPassword");
+        Assert.assertEquals(i, 1);
         user = userMapper.selectByName("test");
         Assert.assertEquals(user.getPassword(), "newPassword");
     }
