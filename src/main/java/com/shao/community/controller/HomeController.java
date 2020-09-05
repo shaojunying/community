@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.thymeleaf.context.Context;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -62,9 +61,8 @@ public class HomeController {
         Map<String, Object> map = userService.register(user);
         if (map == null || map.size() == 0) {
             // 注册成功
-            Context context = new Context();
-            context.setVariable("text", "注册成功,我们向您发送了激活邮件,请尽快激活.");
-            context.setVariable("target", "/index");
+            model.addAttribute("text", "注册成功,我们向您发送了激活邮件,请尽快激活.");
+            model.addAttribute("target", "/index");
             return "/site/operate-result";
         } else {
             // 注册失败 在注册页显示错误信息
