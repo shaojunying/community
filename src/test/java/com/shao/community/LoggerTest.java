@@ -1,6 +1,5 @@
-package com.shao.community.dao;
+package com.shao.community;
 
-import com.shao.community.CommunityApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
