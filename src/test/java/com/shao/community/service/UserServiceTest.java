@@ -2,6 +2,7 @@ package com.shao.community.service;
 
 import com.shao.community.CommunityApplication;
 import com.shao.community.entity.User;
+import com.shao.community.util.CommunityConstant;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,4 +94,17 @@ public class UserServiceTest {
         Assert.assertTrue(map.isEmpty());
     }
 
+    @Test
+    @Transactional
+    public void activate() {
+
+        int result1 = userService.activate(138, "69dcd69f4c0145058df820e90820ba1e");
+        Assert.assertEquals(result1, CommunityConstant.ACTIVATION_REPEAT);
+
+        int result2 = userService.activate(132112, "69dcd69f4c0145058df820e9");
+        Assert.assertEquals(result2, CommunityConstant.ACTIVATION_FAILURE);
+
+        int result3 = userService.activate(168, "18d034086689456e8ac263c8ef888425");
+        Assert.assertEquals(result3, CommunityConstant.ACTIVATION_SUCCESS);
+    }
 }
