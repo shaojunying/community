@@ -58,6 +58,11 @@ public class HomeController {
         return "/site/register";
     }
 
+    @RequestMapping(path = "login", method = RequestMethod.GET)
+    public String getLoginPage() {
+        return "/site/login";
+    }
+
     @RequestMapping(path = "register", method = RequestMethod.POST)
     public String postRegisterPage(Model model, User user) {
         Map<String, Object> map = userService.register(user);
