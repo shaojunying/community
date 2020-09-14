@@ -2,6 +2,7 @@ package com.shao.community.service;
 
 import com.shao.community.dao.UserMapper;
 import com.shao.community.entity.User;
+import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
@@ -94,4 +95,16 @@ public class UserService {
         return map;
     }
 
+    public int activate(int userId, String code) {
+        User user = mapper.selectById(userId);
+        if (user == null) return CommunityConstant.ACTIVATION_FAILURE;
+        if (user.getStatus() == 1) {
+            return CommunityConstant.ACTIVATION_REPEAT;
+        } else if (user.getActivationCode().equals(code)) {
+            mapper.updateStatus(userId, 1);
+            return CommunityConstant.ACTIVATION_SUCCESS;
+        } else {
+            return CommunityConstant.ACTIVATION_FAILURE;
+        }
+    }
 }
