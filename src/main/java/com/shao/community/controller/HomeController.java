@@ -5,9 +5,11 @@ import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
 import com.shao.community.service.DiscussPostService;
 import com.shao.community.service.UserService;
+import com.shao.community.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -72,5 +74,28 @@ public class HomeController {
             return "/site/register";
         }
     }
+
+    @RequestMapping(path = "/activation/{userId}/{activationCode}", method = RequestMethod.GET)
+    public String activate(@PathVariable int userId, @PathVariable String activationCode, Model model) {
+        int result = userService.activate(userId, activationCode);
+        switch (result) {
+            case CommunityConstant.ACTIVATION_SUCCESS:
+                // 注册成功
+                model.addAttribute("text", "激活成功,请登录!");
+                model.addAttribute("target", "/login");
+                break;
+            case CommunityConstant.ACTIVATION_REPEAT:
+                // 重复激活
+                model.addAttribute("text", "账号已激活,请登录!");
+                model.addAttribute("target", "/login");
+                break;
+            case CommunityConstant.ACTIVATION_FAILURE:
+                // 激活失败
+                model.addAttribute("text", "激活失败,请重试!");
+                model.addAttribute("target", "/index");
+        }
+        return "/site/operate-result";
+    }
+
 
 }
