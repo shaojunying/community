@@ -1,6 +1,8 @@
 package com.shao.community.service;
 
+import com.shao.community.dao.LoginTicketMapper;
 import com.shao.community.dao.UserMapper;
+import com.shao.community.entity.LoginTicket;
 import com.shao.community.entity.User;
 import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
@@ -26,7 +28,7 @@ import java.util.Random;
 public class UserService {
 
     @Autowired
-    private UserMapper mapper;
+    private UserMapper userMapper;
 
     @Autowired
     private MailClient mailClient;
@@ -34,11 +36,14 @@ public class UserService {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
     @Value("${community.path.domain}")
     private String domain;
 
     public User findUserById(int id) {
-        return mapper.selectById(id);
+        return userMapper.selectById(id);
     }
 
     public Map<String, Object> register(User user) {
@@ -61,12 +66,12 @@ public class UserService {
         }
 
         // 验证用户名、邮箱是否已存在
-        User userSelectedByName = mapper.selectByName(user.getUsername());
+        User userSelectedByName = userMapper.selectByName(user.getUsername());
         if (userSelectedByName != null) {
             map.put("usernameMsg", "用户名已存在");
             return map;
         }
-        User userSelectedByEmail = mapper.selectByEmail(user.getEmail());
+        User userSelectedByEmail = userMapper.selectByEmail(user.getEmail());
         if (userSelectedByEmail != null) {
             map.put("emailMsg", "邮箱已存在");
             return map;
@@ -82,7 +87,7 @@ public class UserService {
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
         user.setStatus(0);
         user.setType(0);
-        mapper.insertUser(user);
+        userMapper.insertUser(user);
 
         // 发送验证邮件
         Context context = new Context();
@@ -96,15 +101,50 @@ public class UserService {
     }
 
     public int activate(int userId, String code) {
-        User user = mapper.selectById(userId);
+        User user = userMapper.selectById(userId);
         if (user == null) return CommunityConstant.ACTIVATION_FAILURE;
         if (user.getStatus() == 1) {
             return CommunityConstant.ACTIVATION_REPEAT;
         } else if (user.getActivationCode().equals(code)) {
-            mapper.updateStatus(userId, 1);
+            userMapper.updateStatus(userId, 1);
             return CommunityConstant.ACTIVATION_SUCCESS;
         } else {
             return CommunityConstant.ACTIVATION_FAILURE;
         }
     }
+
+    public Map<String, Object> login(String username, String password, int expiredSecond) {
+        Map<String, Object> map = new HashMap<>();
+        // 判断用户名密码是否为空
+        if (StringUtils.isBlank(username)) {
+            map.put("usernameMsg", "用户名不能为空");
+            return map;
+        }
+        if (StringUtils.isBlank(password)) {
+            map.put("passwordMsg", "密码不能为空");
+            return map;
+        }
+        // 判断用户名、账号状态、密码是否正确
+        User user = userMapper.selectByName(username);
+        if (user == null) {
+            map.put("usernameMsg", "用户名不存在");
+            return map;
+        }
+        if (user.getStatus() == 0) {
+            map.put("usernameMsg", "该账号未激活");
+            return map;
+        }
+        password = CommunityUtil.md5(password + user.getSalt());
+        if (!user.getPassword().equals(password)) {
+            map.put("passwordMsg", "密码错误，请重新输入");
+            return map;
+        }
+        String ticket = CommunityUtil.generateUUID();
+        LoginTicket loginTicket = new LoginTicket(user.getId(), ticket, 0,
+                new Date(System.currentTimeMillis() + 1000 * expiredSecond));
+        loginTicketMapper.insert(loginTicket);
+        map.put("ticket", ticket);
+        return map;
+    }
+
 }
