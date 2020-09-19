@@ -107,4 +107,55 @@ public class UserServiceTest {
         int result3 = userService.activate(168, "18d034086689456e8ac263c8ef888425");
         Assert.assertEquals(result3, CommunityConstant.ACTIVATION_SUCCESS);
     }
+
+    @Test
+    @Transactional
+    public void loginWithNullUsername() {
+        // 空用户名登录
+        Map<String, Object> map = userService.login(null, "password", 10);
+        Assert.assertTrue(map.containsKey("usernameMsg"));
+        Assert.assertEquals(map.get("usernameMsg"), "用户名不能为空");
+    }
+
+    @Test
+    @Transactional
+    public void loginWithNullPassword() {
+        // 空密码登录
+        Map<String, Object> map = userService.login("username", null, 10);
+        Assert.assertTrue(map.containsKey("passwordMsg"));
+        Assert.assertEquals(map.get("passwordMsg"), "密码不能为空");
+    }
+
+    @Test
+    @Transactional
+    public void loginWithNoExistUsername() {
+        // 不存在的用户名
+        Map<String, Object> map = userService.login("username", "igLLZdM4yMiqC8i", 10);
+        Assert.assertTrue(map.containsKey("usernameMsg"));
+        Assert.assertEquals(map.get("usernameMsg"), "用户名不存在");
+    }
+
+    @Test
+    @Transactional
+    public void loginWithInactiveAccount() {
+        // 未激活的账号
+        Map<String, Object> map = userService.login("shaojunying1", "igLLZdM4yMiqC8i", 10);
+        Assert.assertTrue(map.containsKey("usernameMsg"));
+        Assert.assertEquals(map.get("usernameMsg"), "该账号未激活");
+    }
+
+    @Test
+    @Transactional
+    public void loginWithWrongPassword() {
+        Map<String, Object> map = userService.login("shaojunying111", "TnsrkRPKbaFb33d1", 10);
+        Assert.assertTrue(map.containsKey("passwordMsg"));
+        Assert.assertEquals(map.get("passwordMsg"), "密码错误，请重新输入");
+    }
+
+    @Test
+    @Transactional
+    public void loginWithNormalInformation() {
+        Map<String, Object> map = userService.login("shaojunying111", "TnsrkRPKbaFb33d", 10);
+        Assert.assertTrue(map.containsKey("ticket"));
+    }
 }
