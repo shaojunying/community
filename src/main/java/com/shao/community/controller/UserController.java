@@ -57,23 +57,23 @@ public class UserController {
             // 获取不到用户信息
             model.addAttribute("text", "获取登录信息失败,请重新登陆");
             model.addAttribute("target", "/login");
-            return "site/operate-result";
+            return "/site/operate-result";
         }
         // 上传图片
         if (uploadImage == null) {
             model.addAttribute("error", "您还没有选择图片");
-            return "site/setting";
+            return "/site/setting";
         }
         // 提取后缀名
         String filename = uploadImage.getOriginalFilename();
         if (filename == null) {
             model.addAttribute("error", "图片格式不正确,请重新选择");
-            return "site/setting";
+            return "/site/setting";
         }
         int index = filename.lastIndexOf(".");
         if (index == -1) {
             model.addAttribute("error", "图片格式不正确,请重新选择");
-            return "site/setting";
+            return "/site/setting";
         }
         String suffix = filename.substring(index);
         filename = CommunityUtil.generateUUID() + suffix;
@@ -108,7 +108,7 @@ public class UserController {
                 OutputStream os = httpServletResponse.getOutputStream()
         ) {
             byte[] buffer = new byte[1024];
-            int b = 0;
+            int b;
             while ((b = fis.read(buffer)) != -1) {
                 os.write(buffer, 0, b);
             }

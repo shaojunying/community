@@ -144,13 +144,13 @@ public class HomeController {
         // 检查是否输入验证码
         if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptcha)) {
             model.addAttribute("codeMsg", "请输入验证码");
-            return "site/login";
+            return "/site/login";
         }
 
         // 检查验证码是否正确
         if (!code.equalsIgnoreCase(kaptcha)) {
             model.addAttribute("codeMsg", "验证码错误,请重新输入");
-            return "site/login";
+            return "/site/login";
         }
 
         // 获取ticket存储时间
@@ -163,7 +163,7 @@ public class HomeController {
             if (usernameMsg != null) model.addAttribute("usernameMsg", usernameMsg);
             String passwordMsg = (String) map.get("passwordMsg");
             if (passwordMsg != null) model.addAttribute("passwordMsg", passwordMsg);
-            return "site/login";
+            return "/site/login";
         } else {
             // 登录成功,返回ticket,跳转到首页
             String ticket = (String) map.get("ticket");
