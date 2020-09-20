@@ -4,6 +4,7 @@ import com.shao.community.entity.LoginTicket;
 import com.shao.community.entity.User;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityUtil;
+import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,19 +24,35 @@ public class UserServiceInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private HostHolder hostHolder;
+
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        // 获取ticket的cookie
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 通过ticket获取User信息并存储起来
         String ticket = CommunityUtil.getCookie(request.getCookies(), "ticket");
         if (ticket != null) {
             LoginTicket loginTicket = userService.getLoginTicketByTicket(ticket);
             if (isValidLoginTicket(loginTicket)) {
                 User user = userService.findUserById(loginTicket.getUserId());
-                if (user != null) {
-                    modelAndView.addObject(user);
-                }
+                hostHolder.setUser(user);
             }
         }
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        // 判断hostHandle中是否存在User,如果存在,赋给modelAndView
+        User user = hostHolder.getUser();
+        if (user != null && modelAndView != null) {
+            modelAndView.addObject(user);
+        }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        hostHolder.removeUser();
     }
 
     private boolean isValidLoginTicket(LoginTicket ticket) {
