@@ -151,4 +151,8 @@ public class UserService {
         loginTicketMapper.updateStatusByTicket(ticket, 1);
     }
 
+    public LoginTicket getLoginTicketByTicket(String ticket) {
+        return loginTicketMapper.selectByTicket(ticket);
+    }
+
 }
