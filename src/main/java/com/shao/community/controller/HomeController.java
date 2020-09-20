@@ -7,6 +7,7 @@ import com.shao.community.entity.User;
 import com.shao.community.service.DiscussPostService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityConstant;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -132,6 +134,45 @@ public class HomeController {
         } catch (IOException e) {
             logger.error("相应验证码失败:" + e.getMessage());
         }
+    }
+
+    @RequestMapping(path = "login", method = RequestMethod.POST)
+    public String postLoginPage(Model model, String username, String password, String code, HttpSession session,
+                                boolean rememberMe, HttpServletResponse httpServletResponse) {
+        String kaptcha = (String) session.getAttribute("kaptcha");
+        // 检查是否输入验证码
+        if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptcha)) {
+            model.addAttribute("codeMsg", "请输入验证码");
+            return "site/login";
+        }
+
+        // 检查验证码是否正确
+        if (!code.equalsIgnoreCase(kaptcha)) {
+            model.addAttribute("codeMsg", "验证码错误,请重新输入");
+            return "site/login";
+        }
+
+        // 获取ticket存储时间
+        int expiredSecond = rememberMe ? CommunityConstant.REMEMBER_EXPIRED_SECOND : CommunityConstant.DEFAULT_EXPIRED_SECOND;
+        // 尝试进行登录
+        Map<String, Object> map = userService.login(username, password, expiredSecond);
+        if (!map.containsKey("ticket")) {
+            // 登录失败,返回错误信息
+            String usernameMsg = (String) map.get("usernameMsg");
+            if (usernameMsg != null) model.addAttribute("usernameMsg", usernameMsg);
+            String passwordMsg = (String) map.get("passwordMsg");
+            if (passwordMsg != null) model.addAttribute("passwordMsg", passwordMsg);
+            return "site/login";
+        } else {
+            // 登录成功,返回ticket,跳转到首页
+            String ticket = (String) map.get("ticket");
+            Cookie cookie = new Cookie("ticket", ticket);
+            cookie.setPath("");
+            cookie.setMaxAge(expiredSecond);
+            httpServletResponse.addCookie(cookie);
+            return "redirect:/index";
+        }
+
     }
 
 }
