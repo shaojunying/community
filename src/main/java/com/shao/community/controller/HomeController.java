@@ -144,13 +144,13 @@ public class HomeController {
         // 检查是否输入验证码
         if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptcha)) {
             model.addAttribute("codeMsg", "请输入验证码");
-            return "site/login";
+            return "/site/login";
         }
 
         // 检查验证码是否正确
         if (!code.equalsIgnoreCase(kaptcha)) {
             model.addAttribute("codeMsg", "验证码错误,请重新输入");
-            return "site/login";
+            return "/site/login";
         }
 
         // 获取ticket存储时间
