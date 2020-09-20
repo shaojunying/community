@@ -147,4 +147,8 @@ public class UserService {
         return map;
     }
 
+    public void logout(String ticket) {
+        loginTicketMapper.updateStatusByTicket(ticket, 1);
+    }
+
 }

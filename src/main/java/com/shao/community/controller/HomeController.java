@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -173,6 +174,16 @@ public class HomeController {
             return "redirect:/index";
         }
 
+    }
+
+    @RequestMapping(path = "logout", method = RequestMethod.GET)
+    public String logout(@CookieValue("ticket") String ticket, HttpServletResponse httpServletResponse) {
+        userService.logout(ticket);
+        Cookie cookie = new Cookie("ticket", ticket);
+        cookie.setMaxAge(0);
+        cookie.setPath("");
+        httpServletResponse.addCookie(cookie);
+        return "redirect:/login";
     }
 
 }
