@@ -163,7 +163,7 @@ public class HomeController {
             if (usernameMsg != null) model.addAttribute("usernameMsg", usernameMsg);
             String passwordMsg = (String) map.get("passwordMsg");
             if (passwordMsg != null) model.addAttribute("passwordMsg", passwordMsg);
-            return "site/login";
+            return "/site/login";
         } else {
             // 登录成功,返回ticket,跳转到首页
             String ticket = (String) map.get("ticket");

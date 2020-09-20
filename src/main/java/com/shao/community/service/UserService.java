@@ -155,4 +155,8 @@ public class UserService {
         return loginTicketMapper.selectByTicket(ticket);
     }
 
+    public int updateHeaderUrl(int id, String headerUrl) {
+        return userMapper.updateHeader(id, headerUrl);
+    }
+
 }
