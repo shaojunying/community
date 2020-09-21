@@ -1,5 +1,6 @@
 package com.shao.community.controller;
 
+import com.shao.community.annotation.LoginRequired;
 import com.shao.community.entity.User;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityUtil;
@@ -46,20 +47,16 @@ public class UserController {
     private HostHolder hostHolder;
 
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String updateUserInfo() {
         return "site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadImage(MultipartFile uploadImage, Model model) throws IOException {
         User user = hostHolder.getUser();
-        if (user == null) {
-            // 获取不到用户信息
-            model.addAttribute("text", "获取登录信息失败,请重新登陆");
-            model.addAttribute("target", "/login");
-            return "/site/operate-result";
-        }
         // 上传图片
         if (uploadImage == null) {
             model.addAttribute("error", "您还没有选择图片");
@@ -121,17 +118,11 @@ public class UserController {
 
     }
 
+    @LoginRequired
     @RequestMapping(path = "changePassword", method = RequestMethod.POST)
     public String changePassword(String oldPassword, String newPassword, Model model) {
 
-        // 用户未登录
         User user = hostHolder.getUser();
-        if (user == null) {
-            // 获取不到用户信息
-            model.addAttribute("text", "获取登录信息失败,请重新登陆");
-            model.addAttribute("target", "/login");
-            return "/site/operate-result";
-        }
 
         // 旧密码不能为空
         if (StringUtils.isBlank(oldPassword)) {
