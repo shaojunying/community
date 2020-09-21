@@ -159,4 +159,8 @@ public class UserService {
         return userMapper.updateHeader(id, headerUrl);
     }
 
+    public int updatePassword(int id, String newPassword) {
+        return userMapper.updatePassword(id, newPassword);
+    }
+
 }

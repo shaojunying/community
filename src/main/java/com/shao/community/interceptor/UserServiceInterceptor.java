@@ -1,4 +1,4 @@
-package com.shao.community.controller;
+package com.shao.community.interceptor;
 
 import com.shao.community.entity.LoginTicket;
 import com.shao.community.entity.User;
