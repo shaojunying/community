@@ -4,6 +4,7 @@ import com.shao.community.entity.User;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,6 +119,44 @@ public class UserController {
             e.printStackTrace();
         }
 
+    }
+
+    @RequestMapping(path = "changePassword", method = RequestMethod.POST)
+    public String changePassword(String oldPassword, String newPassword, Model model) {
+
+        // 用户未登录
+        User user = hostHolder.getUser();
+        if (user == null) {
+            // 获取不到用户信息
+            model.addAttribute("text", "获取登录信息失败,请重新登陆");
+            model.addAttribute("target", "/login");
+            return "/site/operate-result";
+        }
+
+        // 旧密码不能为空
+        if (StringUtils.isBlank(oldPassword)) {
+            model.addAttribute("oldPasswordMsg", "旧密码不能为空");
+            return "site/setting";
+        }
+
+        // 新密码不能为空
+        if (StringUtils.isBlank(newPassword)) {
+            model.addAttribute("newPasswordMsg", "新密码不能为空");
+            return "site/setting";
+        }
+
+        // 旧密码不正确
+        oldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
+        if (!user.getPassword().equals(oldPassword)) {
+            model.addAttribute("oldPasswordMsg", "旧密码不正确");
+            return "site/setting";
+        }
+        // 修改密码
+        newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        userService.updatePassword(user.getId(), newPassword);
+        model.addAttribute("text", "修改密码成功,即将跳转到首页");
+        model.addAttribute("target", "/index");
+        return "site/operate-result";
     }
 
 }
