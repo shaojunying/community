@@ -8,9 +8,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Author: shao
- * Date: 2020-09-20
- * Time: 15:38
+ * @author shao
+ * @date 2020-09-20 15:38
  */
 @Configuration
 public class UserServiceInterceptorAppConfig implements WebMvcConfigurer {

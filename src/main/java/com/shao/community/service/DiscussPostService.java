@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Author: shao
- * Date: 2020-09-02
- * Time: 21:33
+ * @author shao
+ * @date 2020-09-02 21:33
  */
 @Service
 public class DiscussPostService {

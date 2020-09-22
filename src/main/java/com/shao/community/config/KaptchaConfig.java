@@ -9,9 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 /**
- * Author: shao
- * Date: 2020-09-14
- * Time: 16:17
+ * @author shao
+ * @date 2020-09-14 16:17
  */
 @Configuration
 public class KaptchaConfig {

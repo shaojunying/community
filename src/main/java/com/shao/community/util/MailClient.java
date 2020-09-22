@@ -12,9 +12,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
- * Author: shao
- * Date: 2020-09-05
- * Time: 15:57
+ * @author shao
+ * @date 2020-09-05 15:57
  */
 @Component
 public class MailClient {

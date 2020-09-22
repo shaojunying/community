@@ -31,9 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: shao
- * Date: 2020-09-02
- * Time: 21:43
+ * @author shao
+ * @date 2020-09-02 21:43
  */
 @Controller
 public class HomeController {
@@ -48,6 +47,11 @@ public class HomeController {
     @Autowired
     private Producer producer;
 
+    private final String TICKET = "ticket";
+    private final String USERNAME_MESSAGE = "usernameMsg";
+    private final String PASSWORD_MESSAGE = "passwordMsg";
+
+
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page) {
         page.setRows(discussPostService.findDiscussPostsRows(0));
@@ -57,7 +61,7 @@ public class HomeController {
         List<Map<String, Object>> discussPosts = new LinkedList<>();
         if (list != null) {
             for (DiscussPost post : list) {
-                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>(2);
                 map.put("post", post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
@@ -115,6 +119,9 @@ public class HomeController {
                 // 激活失败
                 model.addAttribute("text", "激活失败,请重试!");
                 model.addAttribute("target", "/index");
+                break;
+            default:
+                break;
         }
         return "/site/operate-result";
     }
@@ -157,17 +164,21 @@ public class HomeController {
         int expiredSecond = rememberMe ? CommunityConstant.REMEMBER_EXPIRED_SECOND : CommunityConstant.DEFAULT_EXPIRED_SECOND;
         // 尝试进行登录
         Map<String, Object> map = userService.login(username, password, expiredSecond);
-        if (!map.containsKey("ticket")) {
+        if (!map.containsKey(TICKET)) {
             // 登录失败,返回错误信息
-            String usernameMsg = (String) map.get("usernameMsg");
-            if (usernameMsg != null) model.addAttribute("usernameMsg", usernameMsg);
-            String passwordMsg = (String) map.get("passwordMsg");
-            if (passwordMsg != null) model.addAttribute("passwordMsg", passwordMsg);
+            String usernameMsg = (String) map.get(USERNAME_MESSAGE);
+            if (usernameMsg != null) {
+                model.addAttribute(USERNAME_MESSAGE, usernameMsg);
+            }
+            String passwordMsg = (String) map.get(PASSWORD_MESSAGE);
+            if (passwordMsg != null) {
+                model.addAttribute(PASSWORD_MESSAGE, passwordMsg);
+            }
             return "/site/login";
         } else {
             // 登录成功,返回ticket,跳转到首页
-            String ticket = (String) map.get("ticket");
-            Cookie cookie = new Cookie("ticket", ticket);
+            String ticket = (String) map.get(TICKET);
+            Cookie cookie = new Cookie(TICKET, ticket);
             cookie.setPath("");
             cookie.setMaxAge(expiredSecond);
             httpServletResponse.addCookie(cookie);
