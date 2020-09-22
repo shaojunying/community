@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,5 +40,19 @@ public class DiscussPostMapperTest {
         int rows = mapper.selectDiscussPostsRows(0);
         System.out.println(rows);
         Assert.assertTrue(rows > 0);
+    }
+
+    @Test
+    @Transactional
+    public void insertDiscussPost() {
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setTitle("这是一条测试帖子");
+        discussPost.setContent("这是帖子的内容");
+        discussPost.setUserId(167);
+        discussPost.setCreateTime(new Date());
+        int result = mapper.insertDiscussPost(discussPost);
+        System.out.println(discussPost);
+        Assert.assertEquals(1, result);
+        Assert.assertNotEquals(0, discussPost.getId());
     }
 }
