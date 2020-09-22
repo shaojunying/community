@@ -24,9 +24,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Author: shao
- * Date: 2020-09-20
- * Time: 17:09
+ * @author shao
+ * @date 2020-09-20 17:09
  */
 @Controller
 @RequestMapping("user")

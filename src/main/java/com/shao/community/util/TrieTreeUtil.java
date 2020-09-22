@@ -14,14 +14,15 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Author: shao
- * Date: 2020-09-21
- * Time: 17:26
+ * @author shao
+ * @date 2020-09-21 17:26
  */
 @Component
 public class TrieTreeUtil {
 
-    // Trie树的根节点
+    /**
+     * Trie树的根节点
+     */
     private final TrieNode root = new TrieNode();
     private final String replacement = "***";
     @Value("${community.file.sensitive-words}")

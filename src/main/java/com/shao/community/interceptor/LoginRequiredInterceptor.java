@@ -11,9 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Author: shao
- * Date: 2020-09-21
- * Time: 15:00
+ * @author shao
+ * @date 2020-09-21 15:00
  */
 @Component
 public class LoginRequiredInterceptor implements HandlerInterceptor {

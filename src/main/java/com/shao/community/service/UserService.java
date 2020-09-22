@@ -20,9 +20,8 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Author: shao
- * Date: 2020-09-02
- * Time: 21:35
+ * @author shao
+ * @date 2020-09-02 21:35
  */
 @Service
 public class UserService {
@@ -47,7 +46,7 @@ public class UserService {
     }
 
     public Map<String, Object> register(User user) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(1);
         if (user == null) {
             throw new IllegalArgumentException("参数不能为空");
         }
@@ -102,7 +101,9 @@ public class UserService {
 
     public int activate(int userId, String code) {
         User user = userMapper.selectById(userId);
-        if (user == null) return CommunityConstant.ACTIVATION_FAILURE;
+        if (user == null) {
+            return CommunityConstant.ACTIVATION_FAILURE;
+        }
         if (user.getStatus() == 1) {
             return CommunityConstant.ACTIVATION_REPEAT;
         } else if (user.getActivationCode().equals(code)) {
@@ -114,7 +115,7 @@ public class UserService {
     }
 
     public Map<String, Object> login(String username, String password, int expiredSecond) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(1);
         // 判断用户名密码是否为空
         if (StringUtils.isBlank(username)) {
             map.put("usernameMsg", "用户名不能为空");

@@ -7,9 +7,8 @@ import javax.servlet.http.Cookie;
 import java.util.UUID;
 
 /**
- * Author: shao
- * Date: 2020-09-05
- * Time: 20:59
+ * @author shao
+ * @date 2020-09-05 20:59
  */
 public class CommunityUtil {
 

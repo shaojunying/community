@@ -3,16 +3,20 @@ package com.shao.community.entity;
 import java.util.Date;
 
 /**
- * Author: shao
- * Date: 2020-09-19
- * Time: 13:30
+ * @author shao
+ * @date 2020-09-19 13:30
  */
 public class LoginTicket {
 
     private int id;
     private int userId;
     private String ticket;
-    // 0 ==> 有效 1 ==> 无效
+
+    /**
+     * 当前凭证是否有效
+     * 0 ==> 有效
+     * 1 ==> 无效
+     */
     private int status;
     private Date expired;
 

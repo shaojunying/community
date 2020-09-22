@@ -4,9 +4,8 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * Author: shao
- * Date: 2020-08-19
- * Time: 20:57
+ * @author shao
+ * @date 2020-08-19 20:57
  */
 public class User {
 
@@ -120,8 +119,12 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
         User user = (User) o;
         return getId() == user.getId() &&
                 getType() == user.getType() &&

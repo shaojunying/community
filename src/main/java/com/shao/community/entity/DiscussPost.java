@@ -3,9 +3,8 @@ package com.shao.community.entity;
 import java.util.Date;
 
 /**
- * Author: shao
- * Date: 2020-09-02
- * Time: 16:49
+ * @author shao
+ * @date 2020-09-02 16:49
  */
 public class DiscussPost {
 
