@@ -30,4 +30,13 @@ public interface DiscussPostMapper {
      * @return 指定用户的总帖子数
      */
     int selectDiscussPostsRows(int userId);
+
+
+    /**
+     * 插入一条帖子
+     *
+     * @param discussPost
+     * @return
+     */
+    int insertDiscussPost(DiscussPost discussPost);
 }
