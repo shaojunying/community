@@ -43,4 +43,9 @@ public class DiscussPostService {
         discussPost.setContent(trieTreeUtil.filter(discussPost.getContent()));
         mapper.insertDiscussPost(discussPost);
     }
+
+    public DiscussPost findDiscussPost(int id) {
+        return mapper.selectDiscussPostById(id);
+    }
+
 }
