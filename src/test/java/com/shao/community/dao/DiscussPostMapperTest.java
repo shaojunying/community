@@ -55,4 +55,16 @@ public class DiscussPostMapperTest {
         Assert.assertEquals(1, result);
         Assert.assertNotEquals(0, discussPost.getId());
     }
+
+    @Test
+    public void selectDiscussPostWithExistId() {
+        DiscussPost discussPost = mapper.selectDiscussPostById(109);
+        Assert.assertNotNull(discussPost);
+    }
+
+    @Test
+    public void selectDiscussPostWithNoExistId() {
+        DiscussPost discussPost = mapper.selectDiscussPostById(-1);
+        Assert.assertNull(discussPost);
+    }
 }
