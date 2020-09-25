@@ -13,7 +13,7 @@ public class Page {
     /**
      * 上限的最小值
      */
-    private final int MIN_LIMIT = 100;
+    private final int MIN_LIMIT = 1;
     /**
      * 当前页码
      */
