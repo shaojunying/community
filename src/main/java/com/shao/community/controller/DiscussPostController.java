@@ -1,9 +1,13 @@
 package com.shao.community.controller;
 
+import com.shao.community.entity.Comment;
 import com.shao.community.entity.DiscussPost;
+import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
+import com.shao.community.service.CommentService;
 import com.shao.community.service.DiscussPostService;
 import com.shao.community.service.UserService;
+import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author shao
@@ -31,6 +35,9 @@ public class DiscussPostController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ResponseBody
@@ -50,7 +57,7 @@ public class DiscussPostController {
     }
 
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public String getDiscussPost(@RequestParam("id") int id, Model model) {
+    public String getDiscussPost(@RequestParam("id") int id, Model model, Page page) {
         DiscussPost discussPost = discussPostService.findDiscussPost(id);
         if (discussPost == null) {
             model.addAttribute("text", "要查询的帖子不存在,即将跳转到首页");
@@ -60,6 +67,48 @@ public class DiscussPostController {
         model.addAttribute(discussPost);
         User user = userService.findUserById(discussPost.getUserId());
         model.addAttribute(user);
+
+        // 查询帖子的评论
+        page.setPath(String.format("/discuss-post?id=%d", id));
+        page.setRows(discussPost.getCommentCount());
+        page.setLimit(5);
+        List<Comment> comments = commentService.findComments(CommunityConstant.COMMENT_TO_POST,
+                discussPost.getId(), page.getOffset(), page.getLimit());
+        List<Map<String, Object>> commentsList = new LinkedList<>();
+        for (Comment comment : comments) {
+            Map<String, Object> map = new HashMap<>();
+            // 保存评论的用户信息,以及评论相关信息
+            User publisher = userService.findUserById(comment.getUserId());
+            map.put("publisher", publisher);
+            map.put("comment", comment);
+            // 保存子评论的信息
+            List<Comment> subComments = commentService.findComments(CommunityConstant.COMMENT_TO_COMMENT,
+                    comment.getId(), 0, Integer.MAX_VALUE);
+            List<Map<String, Object>> subCommentsList = new LinkedList<>();
+            if (subComments != null) {
+                for (Comment subComment : subComments) {
+                    Map<String, Object> subCommentMap = new HashMap<>();
+                    // 回复原评论的 ==> 保存评论信息,发布者信息
+                    // 回复子评论的 ==> 保存评论信息,发布者信息,接收者信息
+                    subCommentMap.put("comment", subComment);
+                    User subCommentPublisher = userService.findUserById(subComment.getUserId());
+                    subCommentMap.put("publisher", subCommentPublisher);
+                    subCommentMap.put("receiver", null);
+                    if (subComment.getTargetId() != 0) {
+                        // 回复其他子评论的
+                        User subCommentReceiver = userService.findUserById(subComment.getTargetId());
+                        subCommentMap.put("receiver", subCommentReceiver);
+                    }
+                    subCommentsList.add(subCommentMap);
+                }
+            }
+            map.put("subComments", subCommentsList);
+            // 记录某评论的子评论总条数
+            int subCommentsRows = commentService.findCommentsRows(CommunityConstant.COMMENT_TO_COMMENT, comment.getId());
+            map.put("subCommentsRows", subCommentsRows);
+            commentsList.add(map);
+        }
+        model.addAttribute("commentsList", commentsList);
         return "site/discuss-detail";
     }
 }

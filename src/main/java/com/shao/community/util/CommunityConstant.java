@@ -31,4 +31,6 @@ public interface CommunityConstant {
      */
     int REMEMBER_EXPIRED_SECOND = 3600 * 24 * 100;
 
+    int COMMENT_TO_POST = 1;
+    int COMMENT_TO_COMMENT = 2;
 }
