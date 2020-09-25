@@ -67,4 +67,12 @@ public class DiscussPostMapperTest {
         DiscussPost discussPost = mapper.selectDiscussPostById(-1);
         Assert.assertNull(discussPost);
     }
+
+    @Test
+    public void updateCommentCount() {
+        int result = mapper.updateCommentCount(109, 100);
+        Assert.assertEquals(1, result);
+        DiscussPost discussPost = mapper.selectDiscussPostById(109);
+        Assert.assertEquals(100, discussPost.getCommentCount());
+    }
 }
