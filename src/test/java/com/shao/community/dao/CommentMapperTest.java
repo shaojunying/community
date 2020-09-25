@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,5 +40,18 @@ public class CommentMapperTest {
         int rows = commentMapper.selectCommentsRows(CommunityConstant.COMMENT_TO_POST, 228);
         System.out.println(rows);
         Assert.assertNotEquals(0, rows);
+    }
+
+    @Test
+    public void insertComment() {
+        Comment comment = new Comment();
+        comment.setContent("这是内容");
+        comment.setCreateTime(new Date());
+        comment.setEntityType(1);
+        comment.setEntityId(228);
+        comment.setStatus(0);
+        comment.setUserId(103);
+        int result = commentMapper.insertComment(comment);
+        Assert.assertEquals(1, result);
     }
 }
