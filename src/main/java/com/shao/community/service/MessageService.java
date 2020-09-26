@@ -55,4 +55,8 @@ public class MessageService {
         return messageMapper.updateStatus(message.getId(), 2);
     }
 
+    public void markMessageRead(Message message) {
+        messageMapper.updateStatus(message.getId(), 1);
+    }
+
 }

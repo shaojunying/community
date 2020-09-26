@@ -109,6 +109,14 @@ public class MessageController {
         int anotherUserId = user1 == user.getId() ? user2 : user1;
         model.addAttribute("anotherUserName", userService.findUserById(anotherUserId).getUsername());
         List<Message> messageList = messageService.selectMessages(conversationId, page.getOffset(), page.getLimit());
+
+        // 将消息标记为已读
+        for (Message message : messageList) {
+            if (message.getToId() == user.getId()) {
+                messageService.markMessageRead(message);
+            }
+        }
+
         List<Map<String, Object>> list = new LinkedList<>();
         for (Message message : messageList) {
             Map<String, Object> map = new HashMap<>();
