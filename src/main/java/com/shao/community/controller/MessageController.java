@@ -143,4 +143,19 @@ public class MessageController {
         return CommunityUtil.convertToJson(0, "发送成功");
     }
 
+    @RequestMapping(path = "", method = RequestMethod.DELETE)
+    @LoginRequired
+    @ResponseBody
+    public String postMessage(int id) {
+        System.out.println(111);
+        User user = hostHolder.getUser();
+        Message message = messageService.selectById(id);
+        if (message == null || (user.getId() != message.getFromId() && user.getId() != message.getToId())) {
+            return CommunityUtil.convertToJson(-1, "输入的id有误");
+        }
+
+        // 更新状态
+        messageService.deleteMessage(message);
+        return CommunityUtil.convertToJson(0, "删除成功");
+    }
 }

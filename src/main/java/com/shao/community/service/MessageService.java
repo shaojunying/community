@@ -47,4 +47,12 @@ public class MessageService {
         return messageMapper.insertMessage(message);
     }
 
+    public Message selectById(int id) {
+        return messageMapper.selectById(id);
+    }
+
+    public int deleteMessage(Message message) {
+        return messageMapper.updateStatus(message.getId(), 2);
+    }
+
 }

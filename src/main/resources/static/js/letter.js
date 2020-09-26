@@ -29,4 +29,23 @@ function send_letter() {
 function delete_msg() {
     // TODO 删除数据
     $(this).parents(".media").remove();
+    $.ajax({
+            url: "/message",
+            type: 'delete',
+            data: {"id": $(this)[0].id},
+            success: function (data) {
+                data = $.parseJSON(data);
+                if (data.code == 0) {
+                    $("#hintBody").text("发送成功");
+                } else {
+                    $("#hintBody").text(data.message);
+                }
+                $("#hintModal").modal("show");
+                setTimeout(function () {
+                    $("#hintModal").modal("hide");
+                    window.location.reload();
+                }, 2000);
+            }
+        }
+    )
 }

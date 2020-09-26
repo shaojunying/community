@@ -138,7 +138,8 @@
                             <strong class="mr-auto" th:text="${map.user.username}">落基山脉下的闲人</strong>
                             <small th:text="${#dates.format(map.message.createTime, 'yyyy-MM-dd HH:mm:ss')}">2019-04-25
                                 15:49:32</small>
-                            <button aria-label="Close" class="ml-2 mb-1 close" data-dismiss="toast" type="button">
+                            <button aria-label="Close" class="ml-2 mb-1 close" data-dismiss="toast"
+                                    th:id="${map.message.id}" type="button">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>

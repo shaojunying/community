@@ -70,4 +70,20 @@ public interface MessageMapper {
      */
     int insertMessage(Message message);
 
+    /**
+     * Select by id int.
+     *
+     * @param id the id
+     * @return the int
+     */
+    Message selectById(@Param("id") int id);
+
+    /**
+     * Update status.
+     *
+     * @param id     the id
+     * @param status the status
+     * @return the int
+     */
+    int updateStatus(int id, int status);
 }
