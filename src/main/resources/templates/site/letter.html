@@ -72,7 +72,8 @@
                 <ul class="nav nav-tabs mb-3">
                     <li class="nav-item">
                         <a class="nav-link position-relative active" href="letter.html">朋友私信<span
-                                class="badge badge-danger" th:text="${map.unreadRows}">3</span></a>
+                                class="badge badge-danger" th:if="${unreadRows!=null && unreadRows!=0}"
+                                th:text="${map.unreadRows}">3</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link position-relative" href="notice.html">系统通知<span
