@@ -10,6 +10,7 @@ import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -89,4 +90,35 @@ public class MessageController {
         model.addAttribute("map", ans);
         return "site/letter";
     }
+
+
+    @RequestMapping(path = "detail/{conversationId}", method = RequestMethod.GET)
+    @LoginRequired
+    public String getMessages(Model model, Page page, @PathVariable String conversationId) {
+        User user = hostHolder.getUser();
+        String[] strings = conversationId.split("_");
+        if (strings.length != 2 || (Integer.parseInt(strings[0]) != user.getId() && Integer.parseInt(strings[1]) != user.getId())) {
+            model.addAttribute("text", "访问非法,将跳转到首页");
+            model.addAttribute("target", "/index");
+            return "site/operate-result";
+        }
+        int user1 = Integer.parseInt(strings[0]);
+        int user2 = Integer.parseInt(strings[1]);
+        page.setPath(String.format("/message/detail/%s", conversationId));
+        int rows = messageService.selectMessagesRows(conversationId);
+        page.setRows(rows);
+        int anotherUserId = user1 == user.getId() ? user2 : user1;
+        model.addAttribute("anotherUserName", userService.findUserById(anotherUserId).getUsername());
+        List<Message> messageList = messageService.selectMessages(conversationId, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> list = new LinkedList<>();
+        for (Message message : messageList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", message);
+            map.put("user", userService.findUserById(message.getFromId()));
+            list.add(map);
+        }
+        model.addAttribute("list", list);
+        return "site/letter-detail";
+    }
+
 }
