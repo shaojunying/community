@@ -31,7 +31,8 @@
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
 							<a class="nav-link position-relative" th:href="@{/message}" th:if="${user!=null}">消息<span
-									class="badge badge-danger">12</span></a>
+									class="badge badge-danger" th:if="${unreadRows!=null}"
+									th:text="${unreadRows}">12</span></a>
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
 							<a class="nav-link" th:href="@{/register}" th:if="${user==null}">注册</a>

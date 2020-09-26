@@ -2,6 +2,7 @@ package com.shao.community.interceptor;
 
 import com.shao.community.entity.LoginTicket;
 import com.shao.community.entity.User;
+import com.shao.community.service.MessageService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
@@ -26,6 +27,9 @@ public class UserServiceInterceptor implements HandlerInterceptor {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private MessageService messageService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 通过ticket获取User信息并存储起来
@@ -46,6 +50,8 @@ public class UserServiceInterceptor implements HandlerInterceptor {
         User user = hostHolder.getUser();
         if (user != null && modelAndView != null) {
             modelAndView.addObject(user);
+            int unreadRows = messageService.selectUnreadMessagesRows(user.getId(), null);
+            modelAndView.addObject("unreadRows", unreadRows);
         }
     }
 
