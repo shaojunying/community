@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shao.community.dao.MessageMapper">
+
+    <sql id="selectFields">
+        id, from_id, to_id, conversation_id, content, status, create_time
+    </sql>
+    <sql id="insertFields">
+        from_id, to_id, conversation_id, content, status, create_time
+    </sql>
+    <update id="updateStatus">
+        update community.message
+        set community.message.status = #{status}
+        where id = #{id}
+    </update>
+
+    <select id="selectLatestMessagesWithEveryUser" resultType="com.shao.community.entity.Message">
+        select
+        <include refid="selectFields"/>
+        from message
+        where id in (
+        select max(id)
+        from message
+        where status != 2
+        and from_id != 1
+        and (from_id = #{userId} or to_id = #{userId})
+        group by conversation_id
+        )
+        order by create_time desc
+        limit #{offset},#{limit}
+    </select>
+    <select id="selectLatestMessagesRowsWithEveryUser" resultType="java.lang.Integer">
+        select count(id)
+        from message
+        where id in (select max(id)
+                     from message
+                     where status != 2
+                       and from_id != 1
+                       and (from_id = #{userId} or to_id = #{userId})
+                     group by conversation_id
+        )
+    </select>
+    <select id="selectUnreadMessagesRows" resultType="java.lang.Integer">
+        select count(id)
+        from message
+        where status = 0
+        and from_id != 1
+        and to_id = #{userId}
+        <if test="conversationId != null">
+            and conversation_id = #{conversationId}
+        </if>
+    </select>
+    <select id="selectMessages" resultType="com.shao.community.entity.Message">
+        select
+        <include refid="selectFields"/>
+        from message
+        where status != 2
+        and from_id != 1
+        and conversation_id = #{conversationId}
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
+    <select id="selectMessagesRows" resultType="java.lang.Integer">
+        select count(id)
+        from message
+        where status != 2
+          and from_id != 1
+          and conversation_id = #{conversationId}
+    </select>
+
+    <insert id="insertMessage" parameterType="com.shao.community.entity.Message" keyProperty="id">
+        insert into community.message(<include refid="insertFields"/>)
+        values(#{fromId}, #{toId}, #{conversationId}, #{content}, #{status}, #{createTime})
+    </insert>
+
+    <select id="selectById" resultType="com.shao.community.entity.Message">
+        select
+        <include refid="selectFields"/>
+        from community.message
+        where id=#{id}
+    </select>
+
+</mapper>

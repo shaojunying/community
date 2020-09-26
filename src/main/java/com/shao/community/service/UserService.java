@@ -164,4 +164,7 @@ public class UserService {
         return userMapper.updatePassword(id, newPassword);
     }
 
+    public User selectByName(String username) {
+        return userMapper.selectByName(username);
+    }
 }
