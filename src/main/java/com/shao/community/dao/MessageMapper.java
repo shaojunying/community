@@ -62,4 +62,12 @@ public interface MessageMapper {
      */
     int selectMessagesRows(@Param("conversationId") String conversationId);
 
+    /**
+     * Insert message int.
+     *
+     * @param message the message
+     * @return the int
+     */
+    int insertMessage(Message message);
+
 }

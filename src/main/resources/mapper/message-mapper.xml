@@ -7,6 +7,9 @@
     <sql id="selectFields">
         id, from_id, to_id, conversation_id, content, status, create_time
     </sql>
+    <sql id="insertFields">
+        from_id, to_id, conversation_id, content, status, create_time
+    </sql>
 
     <select id="selectLatestMessagesWithEveryUser" resultType="com.shao.community.entity.Message">
         select
@@ -61,5 +64,10 @@
           and from_id != 1
           and conversation_id = #{conversationId}
     </select>
+
+    <insert id="insertMessage" parameterType="com.shao.community.entity.Message" keyProperty="id">
+        insert into community.message(<include refid="insertFields"/>)
+        values(#{fromId}, #{toId}, #{conversationId}, #{content}, #{status}, #{createTime})
+    </insert>
 
 </mapper>
