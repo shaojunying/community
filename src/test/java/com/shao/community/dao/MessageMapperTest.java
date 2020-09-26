@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,5 +67,20 @@ public class MessageMapperTest {
         int counts = messageMapper.selectMessagesRows("111_131");
         System.out.println(counts);
         Assert.assertTrue(counts > 0);
+    }
+
+    @Test
+//    @Transactional
+    public void insertMessage() {
+        Message message = new Message();
+        message.setContent("测试消息");
+        message.setCreateTime(new Date());
+        message.setStatus(0);
+        message.setFromId(111);
+        message.setToId(167);
+        message.setConversationId("111_167");
+        int result = messageMapper.insertMessage(message);
+        System.out.println(result);
+        Assert.assertEquals(1, result);
     }
 }
