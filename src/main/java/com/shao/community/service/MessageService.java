@@ -2,8 +2,10 @@ package com.shao.community.service;
 
 import com.shao.community.dao.MessageMapper;
 import com.shao.community.entity.Message;
+import com.shao.community.util.TrieTreeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ import java.util.List;
 public class MessageService {
     @Autowired
     private MessageMapper messageMapper;
+
+    @Autowired
+    private TrieTreeUtil trieTreeUtil;
 
     public List<Message> selectLatestMessagesWithEveryUser(int userId, int offset, int limit) {
         return messageMapper.selectLatestMessagesWithEveryUser(userId, offset, limit);
@@ -34,6 +39,12 @@ public class MessageService {
 
     public int selectMessagesRows(String conversationId) {
         return messageMapper.selectMessagesRows(conversationId);
+    }
+
+    public int insertMessage(Message message) {
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(trieTreeUtil.filter(message.getContent()));
+        return messageMapper.insertMessage(message);
     }
 
 }

@@ -95,7 +95,8 @@
                             <form>
                                 <div class="form-group">
                                     <label class="col-form-label" for="recipient-name">发给：</label>
-                                    <input class="form-control" id="recipient-name" type="text" value="落基山脉下的闲人">
+                                    <input class="form-control" id="recipient-name" th:value="${anotherUserName}"
+                                           type="text">
                                 </div>
                                 <div class="form-group">
                                     <label class="col-form-label" for="message-text">内容：</label>

@@ -6,6 +6,7 @@ import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
 import com.shao.community.service.MessageService;
 import com.shao.community.service.UserService;
+import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,11 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The type Message controller.
@@ -119,6 +118,29 @@ public class MessageController {
         }
         model.addAttribute("list", list);
         return "site/letter-detail";
+    }
+
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    @LoginRequired
+    @ResponseBody
+    public String postMessage(String toName, String content) {
+        User user = hostHolder.getUser();
+        User toUser = userService.selectByName(toName);
+        if (toUser == null) {
+            return CommunityUtil.convertToJson(-1, "输入的用户名不正确");
+        }
+        Message message = new Message();
+        message.setContent(content);
+        message.setFromId(user.getId());
+
+        message.setToId(toUser.getId());
+        String conversationId = message.getFromId() > message.getToId() ?
+                message.getToId() + "_" + message.getFromId() : message.getFromId() + "_" + message.getToId();
+        message.setConversationId(conversationId);
+        message.setStatus(0);
+        message.setCreateTime(new Date());
+        messageService.insertMessage(message);
+        return CommunityUtil.convertToJson(0, "发送成功");
     }
 
 }
