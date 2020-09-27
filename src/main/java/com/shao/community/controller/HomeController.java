@@ -197,4 +197,9 @@ public class HomeController {
         return "redirect:/login";
     }
 
+    @RequestMapping(path = "error", method = RequestMethod.GET)
+    public String getError() {
+        return "error/500";
+    }
+
 }
