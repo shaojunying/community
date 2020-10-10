@@ -5,6 +5,7 @@ import com.shao.community.entity.DiscussPost;
 import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
 import com.shao.community.service.DiscussPostService;
+import com.shao.community.service.LikeService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityConstant;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,10 @@ public class HomeController {
     private DiscussPostService discussPostService;
 
     @Autowired
+    private LikeService likeService;
+
+
+    @Autowired
     private Producer producer;
 
     private final String TICKET = "ticket";
@@ -65,6 +70,11 @@ public class HomeController {
                 map.put("post", post);
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
+
+                // 添加每个帖子的点赞数
+                Long likesCount = likeService.getLikesCount(CommunityConstant.COMMENT_TO_POST, post.getId());
+                map.put("likesCount", likesCount);
+
                 discussPosts.add(map);
             }
         }
