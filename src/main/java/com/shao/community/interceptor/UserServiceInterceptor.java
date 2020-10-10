@@ -49,7 +49,7 @@ public class UserServiceInterceptor implements HandlerInterceptor {
         // 判断hostHandle中是否存在User,如果存在,赋给modelAndView
         User user = hostHolder.getUser();
         if (user != null && modelAndView != null) {
-            modelAndView.addObject(user);
+            modelAndView.addObject("loggedUser", user);
             int unreadRows = messageService.selectUnreadMessagesRows(user.getId(), null);
             modelAndView.addObject("unreadRows", unreadRows);
         }

@@ -30,28 +30,28 @@
 							<a class="nav-link" th:href="@{/index}">首页</a>
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
-							<a class="nav-link position-relative" th:href="@{/message}" th:if="${user!=null}">消息
+							<a class="nav-link position-relative" th:href="@{/message}" th:if="${loggedUser!=null}">消息
 								<span class="badge badge-danger" th:if="${unreadRows!=null && unreadRows!=0}"
 									  th:text="${unreadRows}">12</span></a>
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
-							<a class="nav-link" th:href="@{/register}" th:if="${user==null}">注册</a>
+							<a class="nav-link" th:href="@{/register}" th:if="${loggedUser==null}">注册</a>
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
-							<a class="nav-link" th:href="@{/login}" th:if="${user==null}">登录</a>
+							<a class="nav-link" th:href="@{/login}" th:if="${loggedUser==null}">登录</a>
 						</li>
-						<li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${user!=null}">
+						<li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loggedUser!=null}">
 							<a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
 							   data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
-								<img class="rounded-circle" th:src="${user.headerUrl}"
+								<img class="rounded-circle" th:src="${loggedUser.headerUrl}"
 									 style="width:30px;"/>
 							</a>
 							<div aria-labelledby="navbarDropdown" class="dropdown-menu">
 								<a class="dropdown-item text-center" href="site/profile.html">个人主页</a>
-								<a class="dropdown-item text-center" th:href="@{/user/setting}">账号设置</a>
+								<a class="dropdown-item text-center" th:href="@{/loggedUser/setting}">账号设置</a>
 								<a class="dropdown-item text-center" th:href="@{/logout}">退出登录</a>
 								<div class="dropdown-divider"></div>
-								<span class="dropdown-item text-center text-secondary" th:text="${user.username}">nowcoder</span>
+								<span class="dropdown-item text-center text-secondary" th:text="${loggedUser.username}">nowcoder</span>
 							</div>
 						</li>
 					</ul>
