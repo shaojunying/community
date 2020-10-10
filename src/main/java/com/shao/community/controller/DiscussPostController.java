@@ -6,6 +6,7 @@ import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
 import com.shao.community.service.CommentService;
 import com.shao.community.service.DiscussPostService;
+import com.shao.community.service.LikeService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
@@ -39,6 +40,9 @@ public class DiscussPostController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private LikeService likeService;
+
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ResponseBody
     public String postDiscussPost(String title, String content) {
@@ -68,6 +72,15 @@ public class DiscussPostController {
         User user = userService.findUserById(discussPost.getUserId());
         model.addAttribute(user);
 
+        // 当前用户是否点赞该帖子
+        User loggedUser = hostHolder.getUser();
+        boolean postLiked = loggedUser != null && likeService.getLikeStatus(CommunityConstant.COMMENT_TO_POST, discussPost.getId(), loggedUser.getId());
+        model.addAttribute("postLikeStatus", postLiked);
+
+        // 查询帖子的点赞数
+        long postLikesCount = likeService.getLikesCount(CommunityConstant.COMMENT_TO_POST, discussPost.getId());
+        model.addAttribute("postLikesCount", postLikesCount);
+
         // 查询帖子的评论
         page.setPath(String.format("/discuss-post?id=%d", id));
         page.setRows(discussPost.getCommentCount());
@@ -81,6 +94,16 @@ public class DiscussPostController {
             User publisher = userService.findUserById(comment.getUserId());
             map.put("publisher", publisher);
             map.put("comment", comment);
+
+            // 保存评论的点赞数信息
+            Long commentLikesCount = likeService.getLikesCount(CommunityConstant.COMMENT_TO_COMMENT, comment.getId());
+            map.put("commentLikesCount", commentLikesCount);
+
+            // 保存评论的点赞状态
+            boolean commentLikeStatus = loggedUser != null && likeService.getLikeStatus(CommunityConstant.COMMENT_TO_COMMENT, comment.getId(), loggedUser.getId());
+            map.put("commentLikeStatus", commentLikeStatus);
+
+
             // 保存子评论的信息
             List<Comment> subComments = commentService.findComments(CommunityConstant.COMMENT_TO_COMMENT,
                     comment.getId(), 0, Integer.MAX_VALUE);
@@ -91,6 +114,15 @@ public class DiscussPostController {
                     // 回复原评论的 ==> 保存评论信息,发布者信息
                     // 回复子评论的 ==> 保存评论信息,发布者信息,接收者信息
                     subCommentMap.put("comment", subComment);
+
+                    // 子评论的点赞数信息
+                    long subCommentLikesCount = likeService.getLikesCount(CommunityConstant.COMMENT_TO_COMMENT, subComment.getId());
+                    subCommentMap.put("subCommentLikesCount", subCommentLikesCount);
+
+                    // 子评论的点赞状态
+                    boolean subCommentLikeStatus = loggedUser != null && likeService.getLikeStatus(CommunityConstant.COMMENT_TO_COMMENT, subComment.getId(), loggedUser.getId());
+                    subCommentMap.put("subCommentLikeStatus", subCommentLikeStatus);
+
                     User subCommentPublisher = userService.findUserById(subComment.getUserId());
                     subCommentMap.put("publisher", subCommentPublisher);
                     subCommentMap.put("receiver", null);
