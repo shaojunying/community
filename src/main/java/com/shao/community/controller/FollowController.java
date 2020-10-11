@@ -31,7 +31,6 @@ public class FollowController {
             return CommunityUtil.convertToJson(-1, "请登录后再试");
         }
         followService.follow(entityType, entityId, user.getId());
-        // TODO 封装最新的关注和粉丝信息并返回
         return CommunityUtil.convertToJson(0, "关注成功");
     }
 
@@ -43,7 +42,6 @@ public class FollowController {
             return CommunityUtil.convertToJson(-1, "请登录后再试");
         }
         followService.unfollow(entityType, entityId, user.getId());
-        // TODO 封装最新的关注和粉丝信息并返回
         return CommunityUtil.convertToJson(0, "取消关注成功");
     }
 }

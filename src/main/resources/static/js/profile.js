@@ -4,6 +4,7 @@ $(function () {
 
 function follow() {
     var btn = this;
+    console.log(btn);
     if ($(btn).hasClass("btn-info")) {
         // 关注TA
         $.post(
