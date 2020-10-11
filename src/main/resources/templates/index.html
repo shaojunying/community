@@ -47,8 +47,9 @@
 									 style="width:30px;"/>
 							</a>
 							<div aria-labelledby="navbarDropdown" class="dropdown-menu">
-								<a class="dropdown-item text-center" href="site/profile.html">个人主页</a>
-								<a class="dropdown-item text-center" th:href="@{/loggedUser/setting}">账号设置</a>
+								<a class="dropdown-item text-center"
+								   th:href="@{|/user/profile/${loggedUser.id}|}">个人主页</a>
+								<a class="dropdown-item text-center" th:href="@{/user/setting}">账号设置</a>
 								<a class="dropdown-item text-center" th:href="@{/logout}">退出登录</a>
 								<div class="dropdown-divider"></div>
 								<span class="dropdown-item text-center text-secondary" th:text="${loggedUser.username}">nowcoder</span>
@@ -130,7 +131,7 @@
 			<!-- 帖子列表 -->
 			<ul class="list-unstyled">
 				<li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${discussPosts}">
-					<a href="site/profile.html">
+					<a th:href="@{|/user/profile/${map.user.id}|}">
 						<img alt="用户头像" class="mr-4 rounded-circle" style="width:50px;height:50px;"
 							 th:src="${map.user.headerUrl}">
 					</a>
