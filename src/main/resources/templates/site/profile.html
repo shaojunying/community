@@ -87,6 +87,7 @@
                 <div class="media-body">
                     <h5 class="mt-0 text-warning">
                         <span th:text="${user.username}">nowcoder</span>
+                        <input th:value="${user.id}" type="hidden">
                         <button class="btn btn-info btn-sm float-right mr-5 follow-btn"
                                 th:if="${loggedUser != null && loggedUser.id!=user.id}"
                                 type="button">关注TA
@@ -175,7 +176,7 @@
 <script crossorigin="anonymous"
         src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script crossorigin="anonymous" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="../js/global.js"></script>
-<script src="../js/profile.js"></script>
+<script th:src="@{/js/global.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
 </body>
 </html>
