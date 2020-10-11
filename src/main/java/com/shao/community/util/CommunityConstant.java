@@ -33,4 +33,5 @@ public interface CommunityConstant {
 
     int COMMENT_TO_POST = 1;
     int COMMENT_TO_COMMENT = 2;
+    int COMMENT_TO_USER = 3;
 }

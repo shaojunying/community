@@ -2,8 +2,10 @@ package com.shao.community.controller;
 
 import com.shao.community.annotation.LoginRequired;
 import com.shao.community.entity.User;
+import com.shao.community.service.FollowService;
 import com.shao.community.service.LikeService;
 import com.shao.community.service.UserService;
+import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +52,8 @@ public class UserController {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -164,7 +168,18 @@ public class UserController {
         model.addAttribute("user", user);
         int userLikesCount = likeService.getUserLikesCount(userId);
         model.addAttribute("userLikesCount", userLikesCount);
-        // TODO 关注的实现
+        // 关注数
+        long followeeCount = followService.getFolloweeCount(userId, CommunityConstant.COMMENT_TO_USER);
+        model.addAttribute("followeeCount", followeeCount);
+        // 粉丝数
+        long followerCount = followService.getFollowerCount(CommunityConstant.COMMENT_TO_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+        // 关注状态
+        User loggedUser = hostHolder.getUser();
+        if (loggedUser != null) {
+            boolean followed = followService.isFollowed(CommunityConstant.COMMENT_TO_USER, userId, loggedUser.getId());
+            model.addAttribute("followed", followed);
+        }
         return "site/profile";
     }
 
