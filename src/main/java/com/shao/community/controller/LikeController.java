@@ -6,7 +6,6 @@ import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,14 +27,22 @@ public class LikeController {
     @Autowired
     private HostHolder hostHolder;
 
-    @RequestMapping(value = "{entityType}/{entityId}", method = RequestMethod.POST)
+    /**
+     * Like string.
+     *
+     * @param entityType   被点赞实体类型
+     * @param entityId     被点赞实体id
+     * @param entityUserId 被点赞用户id
+     * @return the string
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
-    public String like(@PathVariable int entityType, @PathVariable int entityId) {
+    public String like(int entityType, int entityId, int entityUserId) {
         User loggedUser = hostHolder.getUser();
         if (loggedUser == null) {
             return CommunityUtil.convertToJson(-1, "请登录后重试!");
         }
-        likeService.likeOrUnlike(entityType, entityId, loggedUser.getId());
+        likeService.likeOrUnlike(entityType, entityId, loggedUser.getId(), entityUserId);
         Map<String, Object> map = new HashMap<>();
         boolean likeStatus = likeService.getLikeStatus(entityType, entityId, loggedUser.getId());
         map.put("likeStatus", likeStatus);
@@ -43,5 +50,4 @@ public class LikeController {
         map.put("likeCount", likesCount);
         return CommunityUtil.convertToJson(0, "成功", map);
     }
-
 }

@@ -135,7 +135,7 @@
                     th:each="conversations:${map.conversations}">
                     <span class="badge badge-danger" th:if="${conversations.unreadRows!=0}"
                           th:text="${conversations.unreadRows}">3</span>
-                    <a href="profile.html">
+                    <a th:href="@{|/user/profile/${conversations.user.id}|}">
                         <img alt="用户头像" class="mr-4 rounded-circle user-header"
                              th:src="${conversations.user.headerUrl}">
                     </a>

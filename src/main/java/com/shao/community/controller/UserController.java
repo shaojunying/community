@@ -2,6 +2,7 @@ package com.shao.community.controller;
 
 import com.shao.community.annotation.LoginRequired;
 import com.shao.community.entity.User;
+import com.shao.community.service.LikeService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.InvalidParameterException;
 
 /**
  * @author shao
@@ -44,6 +46,9 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
 
     @LoginRequired
@@ -147,6 +152,20 @@ public class UserController {
         model.addAttribute("text", "修改密码成功,即将跳转到首页");
         model.addAttribute("target", "/index");
         return "site/operate-result";
+    }
+
+    @RequestMapping(value = "profile/{userId}", method = RequestMethod.GET)
+    public String getProfile(@PathVariable int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            // id不存在
+            throw new InvalidParameterException("输入的用户id不存在");
+        }
+        model.addAttribute("user", user);
+        int userLikesCount = likeService.getUserLikesCount(userId);
+        model.addAttribute("userLikesCount", userLikesCount);
+        // TODO 关注的实现
+        return "site/profile";
     }
 
 }
