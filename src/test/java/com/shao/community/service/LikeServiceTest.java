@@ -31,7 +31,7 @@ class LikeServiceTest {
 
     @Test
     void likeOrUnlike() {
-        likeService.likeOrUnlike(CommunityConstant.COMMENT_TO_POST, 275, 13);
+        likeService.likeOrUnlike(CommunityConstant.COMMENT_TO_POST, 275, 13, 11);
         boolean likeStatus = likeService.getLikeStatus(CommunityConstant.COMMENT_TO_POST, 275, 13);
         assertTrue(likeStatus);
     }
@@ -46,5 +46,11 @@ class LikeServiceTest {
     void getLikeStatus2() {
         boolean likeStatus = likeService.getLikeStatus(CommunityConstant.COMMENT_TO_POST, 275, -1);
         assertFalse(likeStatus);
+    }
+
+    @Test
+    void getUserLikesCount() {
+        int userLikesCount = likeService.getUserLikesCount(11);
+        assertEquals(1, userLikesCount);
     }
 }

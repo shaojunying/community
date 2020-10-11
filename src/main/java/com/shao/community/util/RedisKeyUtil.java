@@ -7,6 +7,7 @@ package com.shao.community.util;
 public class RedisKeyUtil {
     private final static String SPLIT = ":";
     private final static String ENTITY_LIKE_PREFIX = "like" + SPLIT + "entity";
+    private final static String USER_LIKE_PREFIX = "like" + SPLIT + "user";
 
     /**
      * 获取实体点赞对应的key
@@ -19,5 +20,10 @@ public class RedisKeyUtil {
     public static String getEntityLikeKey(int entityType, int entityId) {
         return ENTITY_LIKE_PREFIX + SPLIT + entityType + SPLIT + entityId;
     }
+
+    public static String getUserLikeKey(int entityUserId) {
+        return USER_LIKE_PREFIX + SPLIT + entityUserId;
+    }
+
 
 }
