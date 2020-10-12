@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author shao
  * @date 2020/10/11 19:58
@@ -48,5 +51,19 @@ class FollowServiceTest {
     void getFollowerCount() {
         long followerCount = followService.getFollowerCount(CommunityConstant.COMMENT_TO_USER, 167);
         Assert.assertEquals(0, followerCount);
+    }
+
+    @Test
+    void getFollowee() {
+        List<Map<String, Object>> followeeList = followService.getFollowee(167, CommunityConstant.COMMENT_TO_USER, 0, 1000);
+        Assert.assertNotNull(followeeList);
+        System.out.println(followeeList);
+    }
+
+    @Test
+    void getFollower() {
+        List<Map<String, Object>> followerList = followService.getFollower(CommunityConstant.COMMENT_TO_USER, 111, 0, 100);
+        Assert.assertNotNull(followerList);
+        System.out.println(followerList);
     }
 }
