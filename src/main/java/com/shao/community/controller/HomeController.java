@@ -5,9 +5,11 @@ import com.shao.community.entity.DiscussPost;
 import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
 import com.shao.community.service.DiscussPostService;
+import com.shao.community.service.HomeService;
 import com.shao.community.service.LikeService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityConstant;
+import com.shao.community.util.CommunityUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -51,6 +52,9 @@ public class HomeController {
 
     @Autowired
     private Producer producer;
+
+    @Autowired
+    private HomeService homeService;
 
     private final String TICKET = "ticket";
     private final String USERNAME_MESSAGE = "usernameMsg";
@@ -137,14 +141,19 @@ public class HomeController {
     }
 
     @RequestMapping(path = "kaptcha", method = RequestMethod.GET)
-    public void getKaptcha(HttpServletResponse response, HttpSession session) {
+    public void getKaptcha(HttpServletResponse response) {
         // 生成验证码
         String text = producer.createText();
         BufferedImage image = producer.createImage(text);
 
-        // 将验证码文字保存进session
-        session.setAttribute("kaptcha", text);
 
+        // 将cookie==>验证码字符串存入redis
+        String owner = CommunityUtil.generateUUID();
+        Cookie cookie = new Cookie("kaptchaOwner", owner);
+        cookie.setPath("");
+        cookie.setMaxAge(60);
+        response.addCookie(cookie);
+        homeService.saveKaptchaToRedis(owner, text);
         // 将图片发送回浏览器
         try {
             OutputStream outputStream = response.getOutputStream();
@@ -155,10 +164,13 @@ public class HomeController {
     }
 
     @RequestMapping(path = "login", method = RequestMethod.POST)
-    public String postLoginPage(Model model, String username, String password, String code, HttpSession session,
+    public String postLoginPage(Model model, String username, String password, String code, @CookieValue("kaptchaOwner") String owner,
                                 boolean rememberMe, HttpServletResponse httpServletResponse) {
-        String kaptcha = (String) session.getAttribute("kaptcha");
         // 检查是否输入验证码
+        String kaptcha = null;
+        if (StringUtils.isNotBlank(owner)) {
+            kaptcha = homeService.getKaptchaFromRedis(owner);
+        }
         if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptcha)) {
             model.addAttribute("codeMsg", "请输入验证码");
             return "/site/login";
