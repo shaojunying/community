@@ -6,6 +6,7 @@ import java.util.Date;
  * @author shao
  * @date 2020-09-19 13:30
  */
+@Deprecated
 public class LoginTicket {
 
     private int id;

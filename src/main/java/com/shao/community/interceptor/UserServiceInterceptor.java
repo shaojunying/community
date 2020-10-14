@@ -35,9 +35,8 @@ public class UserServiceInterceptor implements HandlerInterceptor {
         // 通过ticket获取User信息并存储起来
         String ticket = CommunityUtil.getCookie(request.getCookies(), "ticket");
         if (ticket != null) {
-            LoginTicket loginTicket = userService.getLoginTicketByTicket(ticket);
-            if (isValidLoginTicket(loginTicket)) {
-                User user = userService.findUserById(loginTicket.getUserId());
+            User user = userService.getUserByTicket(ticket);
+            if (user != null) {
                 hostHolder.setUser(user);
             }
         }

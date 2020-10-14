@@ -22,6 +22,7 @@ import java.util.Date;
 @ContextConfiguration(classes = CommunityApplication.class)
 @SpringBootTest
 @Transactional
+@Deprecated
 public class LoginTicketMapperTest {
 
     @Autowired
