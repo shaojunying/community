@@ -18,6 +18,7 @@ public class RedisKeyUtil {
      * 用户的关注
      */
     private final static String FOLLOWER_PREFIX = "follower";
+    private final static String KAPTCHA_PREFIX = "kaptcha";
 
     /**
      * 获取实体点赞对应的key
@@ -66,4 +67,7 @@ public class RedisKeyUtil {
         return FOLLOWER_PREFIX + SPLIT + entityType + SPLIT + entityId;
     }
 
+    public static String getKaptchaKey(String owner) {
+        return KAPTCHA_PREFIX + SPLIT + owner;
+    }
 }
