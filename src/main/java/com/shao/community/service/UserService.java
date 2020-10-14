@@ -23,8 +23,10 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * The type User service.
+ *
  * @author shao
- * @date 2020-09-02 21:35
+ * @date 2020 -09-02 21:35
  */
 @Service
 public class UserService {
@@ -49,7 +51,12 @@ public class UserService {
     private String domain;
 
     public User findUserById(int id) {
-        return userMapper.selectById(id);
+        User user = getCachedUser(id);
+        if (user == null) {
+            user = userMapper.selectById(id);
+            cacheUser(id, user);
+        }
+        return user;
     }
 
     public Map<String, Object> register(User user) {
@@ -114,6 +121,7 @@ public class UserService {
         if (user.getStatus() == 1) {
             return CommunityConstant.ACTIVATION_REPEAT;
         } else if (user.getActivationCode().equals(code)) {
+            deleteCachedUser(userId);
             userMapper.updateStatus(userId, 1);
             return CommunityConstant.ACTIVATION_SUCCESS;
         } else {
@@ -165,11 +173,15 @@ public class UserService {
     }
 
     public int updateHeaderUrl(int id, String headerUrl) {
-        return userMapper.updateHeader(id, headerUrl);
+        int ans = userMapper.updateHeader(id, headerUrl);
+        deleteCachedUser(id);
+        return ans;
     }
 
     public int updatePassword(int id, String newPassword) {
-        return userMapper.updatePassword(id, newPassword);
+        int ans = userMapper.updatePassword(id, newPassword);
+        deleteCachedUser(id);
+        return ans;
     }
 
     public User selectByName(String username) {
@@ -185,4 +197,40 @@ public class UserService {
         User user = findUserById(userId);
         return user;
     }
+
+    /**
+     * 获取缓存的用户
+     *
+     * @param userId the user id
+     * @return the user
+     */
+    public User getCachedUser(int userId) {
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        return (User) redisTemplate.opsForValue().get(userKey);
+    }
+
+
+    /**
+     * 缓存用户信息
+     *
+     * @param userId the user id
+     * @param user   the user
+     */
+    public void cacheUser(int userId, User user) {
+        assert user != null;
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.opsForValue().set(userKey, user, 3600, TimeUnit.SECONDS);
+    }
+
+
+    /**
+     * 删除缓存的用户信息
+     *
+     * @param userId the user id
+     */
+    public void deleteCachedUser(int userId) {
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.delete(userKey);
+    }
+
 }

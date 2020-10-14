@@ -20,6 +20,7 @@ public class RedisKeyUtil {
     private final static String FOLLOWER_PREFIX = "follower";
     private final static String KAPTCHA_PREFIX = "kaptcha";
     private final static String TICKET_PREFIX = "ticket";
+    private final static String USER_PREFIX = "user";
 
     /**
      * 获取实体点赞对应的key
@@ -74,5 +75,9 @@ public class RedisKeyUtil {
 
     public static String getTicketKey(String ticket) {
         return TICKET_PREFIX + SPLIT + ticket;
+    }
+
+    public static String getUserKey(int userId) {
+        return USER_PREFIX + SPLIT + userId;
     }
 }
