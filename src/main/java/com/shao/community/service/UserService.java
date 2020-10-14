@@ -7,9 +7,11 @@ import com.shao.community.entity.User;
 import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.MailClient;
+import com.shao.community.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -18,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author shao
@@ -36,7 +39,11 @@ public class UserService {
     private TemplateEngine templateEngine;
 
     @Autowired
+    @Deprecated
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Value("${community.path.domain}")
     private String domain;
@@ -141,17 +148,18 @@ public class UserService {
             return map;
         }
         String ticket = CommunityUtil.generateUUID();
-        LoginTicket loginTicket = new LoginTicket(user.getId(), ticket, 0,
-                new Date(System.currentTimeMillis() + 1000 * expiredSecond));
-        loginTicketMapper.insert(loginTicket);
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        redisTemplate.opsForValue().set(ticketKey, user.getId(), expiredSecond, TimeUnit.SECONDS);
         map.put("ticket", ticket);
         return map;
     }
 
     public void logout(String ticket) {
-        loginTicketMapper.updateStatusByTicket(ticket, 1);
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        redisTemplate.delete(ticketKey);
     }
 
+    @Deprecated
     public LoginTicket getLoginTicketByTicket(String ticket) {
         return loginTicketMapper.selectByTicket(ticket);
     }
@@ -166,5 +174,15 @@ public class UserService {
 
     public User selectByName(String username) {
         return userMapper.selectByName(username);
+    }
+
+    public User getUserByTicket(String ticket) {
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        Integer userId = (Integer) redisTemplate.opsForValue().get(ticketKey);
+        if (userId == null) {
+            return null;
+        }
+        User user = findUserById(userId);
+        return user;
     }
 }
