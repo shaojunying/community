@@ -37,7 +37,7 @@ public class LikeController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId, int entityUserId) {
+    public String like(int entityType, int entityId, int entityUserId, int postId) {
         User loggedUser = hostHolder.getUser();
         if (loggedUser == null) {
             return CommunityUtil.convertToJson(-1, "请登录后重试!");
