@@ -1,7 +1,9 @@
 package com.shao.community.controller;
 
+import com.shao.community.entity.Event;
 import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
+import com.shao.community.event.ProduceEvent;
 import com.shao.community.service.FollowService;
 import com.shao.community.service.UserService;
 import com.shao.community.util.CommunityConstant;
@@ -35,6 +37,9 @@ public class FollowController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProduceEvent produceEvent;
+
     @RequestMapping(value = "follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId) {
@@ -43,6 +48,12 @@ public class FollowController {
             return CommunityUtil.convertToJson(-1, "请登录后再试");
         }
         followService.follow(entityType, entityId, user.getId());
+        Event event = new Event()
+                .setTopic(CommunityConstant.FOLLOW_TOPIC)
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setUserId(user.getId());
+        produceEvent.fireEvent(event);
         return CommunityUtil.convertToJson(0, "关注成功");
     }
 

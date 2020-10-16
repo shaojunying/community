@@ -2,8 +2,13 @@ package com.shao.community.controller;
 
 import com.shao.community.annotation.LoginRequired;
 import com.shao.community.entity.Comment;
+import com.shao.community.entity.DiscussPost;
+import com.shao.community.entity.Event;
 import com.shao.community.entity.User;
+import com.shao.community.event.ProduceEvent;
 import com.shao.community.service.CommentService;
+import com.shao.community.service.DiscussPostService;
+import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +29,13 @@ public class CommentController {
     private CommentService commentService;
 
     @Autowired
+    private DiscussPostService discussPostService;
+
+    @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private ProduceEvent produceEvent;
 
     @RequestMapping(path = "", method = RequestMethod.POST)
     @LoginRequired
@@ -39,6 +50,29 @@ public class CommentController {
         comment.setCreateTime(new Date());
         comment.setTargetId(targetId == null ? 0 : targetId);
         commentService.insertComment(comment);
+
+        // 创建评论事件
+        Event event = new Event()
+                .setTopic(CommunityConstant.COMMENT_TOPIC)
+                .setEntityId(comment.getEntityId())
+                .setEntityType(comment.getEntityType())
+                .setUserId(comment.getUserId())
+                .setData("postId", postId);
+        if (entityId == CommunityConstant.COMMENT_TO_POST) {
+            DiscussPost discussPost = discussPostService.findDiscussPost(event.getEntityId());
+            if (discussPost == null) {
+                throw new RuntimeException("帖子id不正确");
+            }
+            event.setEntityUserId(discussPost.getUserId());
+        } else {
+            Comment targetComment = commentService.findCommentById(event.getEntityId());
+            if (targetComment == null) {
+                throw new RuntimeException("评论id不正确");
+            }
+            event.setEntityUserId(event.getUserId());
+        }
+        produceEvent.fireEvent(event);
+
         return String.format("redirect:/discuss-post?id=%d", postId);
     }
 
