@@ -86,4 +86,31 @@ public interface MessageMapper {
      * @return the int
      */
     int updateStatus(int id, int status);
+
+    /**
+     * 获取用户某topic的最新消息
+     *
+     * @param userId the user id
+     * @param topic  the topic
+     * @return the message
+     */
+    Message selectLatestNotice(@Param("userId") int userId, @Param("topic") String topic);
+
+    /**
+     * 获取用户某topic的总消息数量
+     *
+     * @param userId the user id
+     * @param topic  the topic
+     * @return the int
+     */
+    int selectNoticesCount(@Param("userId") int userId, String topic);
+
+    /**
+     * 获取用户某topic的未读消息数量
+     *
+     * @param userId the user id
+     * @param topic  the topic
+     * @return the int
+     */
+    int selectUnreadNoticesCount(@Param("userId") int userId, String topic);
 }

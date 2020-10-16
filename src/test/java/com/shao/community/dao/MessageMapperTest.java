@@ -83,4 +83,23 @@ public class MessageMapperTest {
         System.out.println(result);
         Assert.assertEquals(1, result);
     }
+
+    @Test
+    public void selectLatestNotice() {
+        Message message = messageMapper.selectLatestNotice(168, "like");
+        Assert.assertNotNull(message);
+        System.out.println(message);
+    }
+
+    @Test
+    public void selectNoticesCount() {
+        int like = messageMapper.selectNoticesCount(168, "like");
+        Assert.assertTrue(like > 0);
+    }
+
+    @Test
+    public void selectUnreadNoticesCount() {
+        int like = messageMapper.selectUnreadNoticesCount(168, "like");
+        Assert.assertTrue(like > 0);
+    }
 }
