@@ -54,4 +54,10 @@ public class CommentMapperTest {
         int result = commentMapper.insertComment(comment);
         Assert.assertEquals(1, result);
     }
+
+    @Test
+    public void selectCommentById() {
+        Comment comment = commentMapper.selectCommentById(66);
+        Assert.assertNotNull(comment);
+    }
 }

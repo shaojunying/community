@@ -1,7 +1,10 @@
 package com.shao.community.controller;
 
+import com.shao.community.entity.Event;
 import com.shao.community.entity.User;
+import com.shao.community.event.ProduceEvent;
 import com.shao.community.service.LikeService;
+import com.shao.community.util.CommunityConstant;
 import com.shao.community.util.CommunityUtil;
 import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,9 @@ public class LikeController {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private ProduceEvent produceEvent;
+
     /**
      * Like string.
      *
@@ -37,7 +43,7 @@ public class LikeController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId, int entityUserId) {
+    public String like(int entityType, int entityId, int entityUserId, int postId) {
         User loggedUser = hostHolder.getUser();
         if (loggedUser == null) {
             return CommunityUtil.convertToJson(-1, "请登录后重试!");
@@ -48,6 +54,19 @@ public class LikeController {
         map.put("likeStatus", likeStatus);
         Long likesCount = likeService.getLikesCount(entityType, entityId);
         map.put("likeCount", likesCount);
+
+        // 产生点赞事件
+        if (likeStatus) {
+            Event event = new Event()
+                    .setEntityType(entityType)
+                    .setEntityId(entityId)
+                    .setEntityUserId(entityUserId)
+                    .setTopic(CommunityConstant.LIKE_TOPIC)
+                    .setUserId(loggedUser.getId())
+                    .setData("post", postId);
+            produceEvent.fireEvent(event);
+        }
+
         return CommunityUtil.convertToJson(0, "成功", map);
     }
 }

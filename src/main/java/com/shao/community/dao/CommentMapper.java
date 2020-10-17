@@ -42,4 +42,11 @@ public interface CommentMapper {
      */
     int insertComment(Comment comment);
 
+    /**
+     * Select comment by id comment.
+     *
+     * @param commentId the comment id
+     * @return the comment
+     */
+    Comment selectCommentById(int commentId);
 }

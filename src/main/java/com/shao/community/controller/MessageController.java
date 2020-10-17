@@ -68,6 +68,9 @@ public class MessageController {
         // 获取未读私信总条数
         int unreadRows = messageService.selectUnreadMessagesRows(user.getId(), null);
         ans.put("unreadRows", unreadRows);
+
+        int unreadNoticesCount = messageService.selectUnreadNoticesCount(user.getId(), null);
+        ans.put("unreadNoticesCount", unreadNoticesCount);
         // 使用list存储会话列表
         List<Map<String, Object>> conversations = new LinkedList<>();
         List<Message> messages = messageService.selectLatestMessagesWithEveryUser(user.getId(), page.getOffset(), page.getLimit());

@@ -31,8 +31,8 @@
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
 							<a class="nav-link position-relative" th:href="@{/message}" th:if="${loggedUser!=null}">消息
-								<span class="badge badge-danger" th:if="${unreadRows!=null && unreadRows!=0}"
-									  th:text="${unreadRows}">12</span></a>
+								<span class="badge badge-danger" th:if="${allUnreadCount!=null && allUnreadCount!=0}"
+									  th:text="${allUnreadCount}">12</span></a>
 						</li>
 						<li class="nav-item ml-3 btn-group-vertical">
 							<a class="nav-link" th:href="@{/register}" th:if="${loggedUser==null}">注册</a>

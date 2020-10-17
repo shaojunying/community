@@ -30,6 +30,12 @@
           and entity_type = #{entityType}
           and entity_id = #{entityId}
     </select>
+    <select id="selectCommentById" resultType="com.shao.community.entity.Comment">
+        select
+        <include refid="selectFields"/>
+        from community.comment
+        where id = #{commentId}
+    </select>
 
     <insert id="insertComment">
         insert into community.comment(<include refid="insertFields"/>)
