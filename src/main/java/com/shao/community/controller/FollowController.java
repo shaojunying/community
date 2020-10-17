@@ -52,7 +52,8 @@ public class FollowController {
                 .setTopic(CommunityConstant.FOLLOW_TOPIC)
                 .setEntityType(entityType)
                 .setEntityId(entityId)
-                .setUserId(user.getId());
+                .setUserId(user.getId())
+                .setEntityUserId(entityId);
         produceEvent.fireEvent(event);
         return CommunityUtil.convertToJson(0, "关注成功");
     }

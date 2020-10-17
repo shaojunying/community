@@ -13,9 +13,21 @@ public class Event {
      * 事件对应的topic,指定将该事件发送到哪个topic
      */
     private String topic;
+    /**
+     * 动作发起者id
+     */
     private int userId;
+    /**
+     * 被操作的实体类型
+     */
     private int entityType;
+    /**
+     * 被操作的实体id
+     */
     private int entityId;
+    /**
+     * 被操作者id
+     */
     private int entityUserId;
 
     public String getTopic() {

@@ -56,7 +56,7 @@ public class CommentController {
                 .setTopic(CommunityConstant.COMMENT_TOPIC)
                 .setEntityId(comment.getEntityId())
                 .setEntityType(comment.getEntityType())
-                .setUserId(comment.getUserId())
+                .setUserId(user.getId())
                 .setData("postId", postId);
         if (entityType == CommunityConstant.COMMENT_TO_POST) {
             DiscussPost discussPost = discussPostService.findDiscussPost(event.getEntityId());
