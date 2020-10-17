@@ -58,7 +58,7 @@ public class CommentController {
                 .setEntityType(comment.getEntityType())
                 .setUserId(comment.getUserId())
                 .setData("postId", postId);
-        if (entityId == CommunityConstant.COMMENT_TO_POST) {
+        if (entityType == CommunityConstant.COMMENT_TO_POST) {
             DiscussPost discussPost = discussPostService.findDiscussPost(event.getEntityId());
             if (discussPost == null) {
                 throw new RuntimeException("帖子id不正确");
