@@ -62,6 +62,7 @@ public class LikeController {
                     .setEntityId(entityId)
                     .setEntityUserId(entityUserId)
                     .setTopic(CommunityConstant.LIKE_TOPIC)
+                    .setUserId(loggedUser.getId())
                     .setData("post", postId);
             produceEvent.fireEvent(event);
         }
