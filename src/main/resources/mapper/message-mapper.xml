@@ -112,5 +112,16 @@
             and conversation_id = #{topic}
         </if>
     </select>
+    <select id="selectNotices" resultType="com.shao.community.entity.Message">
+        select
+        <include refid="selectFields"/>
+        from community.message
+        where from_id = 1
+        and to_id = #{userId}
+        and conversation_id = #{topic}
+        and status != 2
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
 
 </mapper>

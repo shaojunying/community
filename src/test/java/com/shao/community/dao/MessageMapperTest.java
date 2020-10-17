@@ -2,6 +2,7 @@ package com.shao.community.dao;
 
 import com.shao.community.CommunityApplication;
 import com.shao.community.entity.Message;
+import com.shao.community.util.CommunityConstant;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,5 +102,12 @@ public class MessageMapperTest {
     public void selectUnreadNoticesCount() {
         int like = messageMapper.selectUnreadNoticesCount(168, "like");
         Assert.assertTrue(like > 0);
+    }
+
+    @Test
+    public void selectNotices() {
+        List<Message> messages = messageMapper.selectNotices(167, CommunityConstant.COMMENT_TOPIC, 0, 100);
+        Assert.assertNotNull(messages);
+        System.out.println(messages);
     }
 }
