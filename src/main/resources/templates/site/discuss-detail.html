@@ -128,7 +128,7 @@
             <ul class="list-unstyled mt-4" th:each="comment, iterStatus: ${commentsList}">
                 <!-- 第1条回帖 -->
                 <li class="media pb-3 pt-3 mb-3 border-bottom">
-                    <a href="profile.html">
+                    <a th:href="@{|/user/profile/${comment.publisher.id}|}">
                         <img alt="用户头像" class="align-self-start mr-4 rounded-circle user-header"
                              th:src="${comment.publisher.headerUrl}">
                     </a>
