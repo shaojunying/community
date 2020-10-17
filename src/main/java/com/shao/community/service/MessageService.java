@@ -59,4 +59,15 @@ public class MessageService {
         messageMapper.updateStatus(message.getId(), 1);
     }
 
+    public Message selectLatestNotice(int userId, String topic) {
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+
+    public int selectNoticesCount(int userId, String topic) {
+        return messageMapper.selectNoticesCount(userId, topic);
+    }
+
+    public int selectUnreadNoticesCount(int userId, String topic) {
+        return messageMapper.selectUnreadNoticesCount(userId, topic);
+    }
 }
