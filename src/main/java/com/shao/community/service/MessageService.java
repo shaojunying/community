@@ -70,4 +70,9 @@ public class MessageService {
     public int selectUnreadNoticesCount(int userId, String topic) {
         return messageMapper.selectUnreadNoticesCount(userId, topic);
     }
+
+    public List<Message> selectNotices(int userId, String topic, int offset, int limit) {
+        return messageMapper.selectNotices(userId, topic, offset, limit);
+    }
+
 }

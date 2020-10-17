@@ -87,7 +87,9 @@
             <!-- 通知列表 -->
             <ul class="list-unstyled">
                 <li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="${commentMap!=null}">
-                    <span class="badge badge-danger" th:text="${commentMap.unreadCount}">3</span>
+                    <span class="badge badge-danger"
+                          th:if="${commentMap.unreadCount!=null && commentMap.unreadCount!=0}"
+                          th:text="${commentMap.unreadCount}">3</span>
                     <img alt="通知图标" class="mr-4 user-header" src="http://static.nowcoder.com/images/head/reply.png">
                     <div class="media-body">
                         <h6 class="mt-0 mb-3">
@@ -97,7 +99,7 @@
                             >2019-04-28 14:13:25</span>
                         </h6>
                         <div>
-                            <a href="notice-detail.html">用户 <i th:text="${commentMap.latestMap.fromUser.username}">nowcoder</i>
+                            <a th:href="@{/notice/comment}">用户 <i th:text="${commentMap.latestMap.fromUser.username}">nowcoder</i>
                                 评论了你的<b>帖子</b> ...</a>
                             <ul class="d-inline font-size-12 float-right">
                                 <li class="d-inline ml-2"><span class="text-primary">共 <i th:text="${commentMap.count}">3</i> 条会话</span>
@@ -107,7 +109,8 @@
                     </div>
                 </li>
                 <li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="${likeMap!=null}">
-                    <span class="badge badge-danger" th:text="${likeMap.unreadCount}">3</span>
+                    <span class="badge badge-danger" th:if="${likeMap.unreadCount!=null && likeMap.unreadCount!=0}"
+                          th:text="${likeMap.unreadCount}">3</span>
                     <img alt="通知图标" class="mr-4 user-header" src="http://static.nowcoder.com/images/head/like.png">
                     <div class="media-body">
                         <h6 class="mt-0 mb-3">
@@ -117,7 +120,7 @@
                             >2019-04-28 14:13:25</span>
                         </h6>
                         <div>
-                            <a href="notice-detail.html">用户 <i
+                            <a th:href="@{/notice/like}">用户 <i
                                     th:text="${likeMap.latestMap.fromUser.username}">nowcoder</i> 点赞了你的<b>帖子</b> ...</a>
                             <ul class="d-inline font-size-12 float-right">
                                 <li class="d-inline ml-2"><span class="text-primary">共 <i
@@ -127,7 +130,8 @@
                     </div>
                 </li>
                 <li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:if="${followMap!=null}">
-                    <span class="badge badge-danger" th:text="${followMap.unreadCount}">3</span>
+                    <span class="badge badge-danger" th:if="${followMap.unreadCount!=null && followMap.unreadCount!=0}"
+                          th:text="${followMap.unreadCount}">3</span>
                     <img alt="通知图标" class="mr-4 user-header" src="http://static.nowcoder.com/images/head/follow.png">
                     <div class="media-body">
                         <h6 class="mt-0 mb-3">
@@ -137,7 +141,7 @@
                             >2019-04-28 14:13:25</span>
                         </h6>
                         <div>
-                            <a href="notice-detail.html">用户 <i th:text="${followMap.latestMap.fromUser.username}">nowcoder</i>
+                            <a th:href="@{/notice/follow}">用户 <i th:text="${followMap.latestMap.fromUser.username}">nowcoder</i>
                                 关注了你 ...</a>
                             <ul class="d-inline font-size-12 float-right">
                                 <li class="d-inline ml-2"><span class="text-primary">共 <i

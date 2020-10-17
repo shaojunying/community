@@ -3,6 +3,7 @@ package com.shao.community.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.shao.community.annotation.LoginRequired;
 import com.shao.community.entity.Message;
+import com.shao.community.entity.Page;
 import com.shao.community.entity.User;
 import com.shao.community.service.MessageService;
 import com.shao.community.service.UserService;
@@ -11,11 +12,15 @@ import com.shao.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.HtmlUtils;
 
+import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,6 +104,53 @@ public class NoticeController {
         int unreadNoticesCount = messageService.selectUnreadNoticesCount(loggedUser.getId(), topic);
         map.put("unreadCount", unreadNoticesCount);
         return map;
+    }
+
+    @RequestMapping(value = "{topic}", method = RequestMethod.GET)
+    @LoginRequired
+    public String getNoticeDetail(@PathVariable String topic, Page page, Model model) {
+        User loggedUser = hostHolder.getUser();
+        if (!topic.equals(CommunityConstant.COMMENT_TOPIC) && !topic.equals(CommunityConstant.LIKE_TOPIC) && !topic.equals(CommunityConstant.FOLLOW_TOPIC)) {
+            throw new InvalidParameterException("topic参数不合法: " + topic);
+        }
+        int noticesCount = messageService.selectNoticesCount(loggedUser.getId(), topic);
+        page.setRows(noticesCount);
+        page.setLimit(5);
+        page.setPath("/notice/" + topic);
+
+        List<Message> messageList = messageService.selectNotices(loggedUser.getId(), topic, page.getOffset(), page.getLimit());
+
+        // 将所有消息标记为已读
+        for (Message message : messageList) {
+            messageService.markMessageRead(message);
+        }
+
+        List<Map<String, Object>> ans = new LinkedList<>();
+        for (Message message : messageList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", message);
+            String content = message.getContent();
+            if (content == null) {
+                throw new RuntimeException("解析消息内容出错");
+            }
+            content = HtmlUtils.htmlUnescape(content);
+            Map<String, Object> contentMap = JSONObject.parseObject(content, HashMap.class);
+            if (contentMap == null) {
+                throw new RuntimeException("解析消息内容出错");
+            }
+            map.put("entityType", contentMap.get("entityType"));
+            map.put("entityId", contentMap.get("entityId"));
+            int userId = (int) contentMap.get("userId");
+            map.put("entityUser", userService.findUserById(userId));
+            if (topic.equals(CommunityConstant.LIKE_TOPIC) || topic.equals(CommunityConstant.COMMENT_TOPIC)) {
+                map.put("postId", contentMap.get("postId"));
+            }
+            User fromUser = userService.findUserById(message.getFromId());
+            map.put("fromUser", fromUser);
+            ans.add(map);
+        }
+        model.addAttribute("ans", ans);
+        return "/site/notice-detail";
     }
 
 }
