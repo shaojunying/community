@@ -6,9 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -39,8 +42,21 @@ public class ElasticsearchServiceTest {
 
     @Test
     public void search() {
-        List<DiscussPost> discussPosts = elasticsearchService.search("一条测试的帖子", 0, 100);
-        for (DiscussPost discussPost : discussPosts) {
+        SearchHits<DiscussPost> searchHits = elasticsearchService.search("一条测试的帖子", 0, 100);
+        System.out.println(searchHits.getTotalHits());
+        List<SearchHit<DiscussPost>> searchHitList = searchHits.getSearchHits();
+        List<DiscussPost> result = new LinkedList<>();
+        for (SearchHit<DiscussPost> discussPostSearchHit : searchHitList) {
+            DiscussPost discussPost = discussPostSearchHit.getContent();
+            if (!discussPostSearchHit.getHighlightField("title").isEmpty()) {
+                discussPost.setTitle(discussPostSearchHit.getHighlightField("title").get(0));
+            }
+            if (!discussPostSearchHit.getHighlightField("content").isEmpty()) {
+                discussPost.setContent(discussPostSearchHit.getHighlightField("content").get(0));
+            }
+            result.add(discussPost);
+        }
+        for (DiscussPost discussPost : result) {
             System.out.println(discussPost);
         }
     }

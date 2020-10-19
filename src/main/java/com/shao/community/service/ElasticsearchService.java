@@ -9,14 +9,10 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author shao
@@ -55,7 +51,7 @@ public class ElasticsearchService {
      * @param text the text
      * @return the list
      */
-    public List<DiscussPost> search(String text, int current, int limit) {
+    public SearchHits<DiscussPost> search(String text, int current, int limit) {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.multiMatchQuery(text, "title", "content"))
                 .withSort(SortBuilders.fieldSort("type").order(SortOrder.DESC))
@@ -66,19 +62,7 @@ public class ElasticsearchService {
                         new HighlightBuilder.Field("title"), new HighlightBuilder.Field("content")
                 ).build();
         SearchHits<DiscussPost> searchHits = elasticsearchOperations.search(searchQuery, DiscussPost.class);
-        List<SearchHit<DiscussPost>> searchHitList = searchHits.getSearchHits();
-        List<DiscussPost> result = new LinkedList<>();
-        for (SearchHit<DiscussPost> discussPostSearchHit : searchHitList) {
-            DiscussPost discussPost = discussPostSearchHit.getContent();
-            if (!discussPostSearchHit.getHighlightField("title").isEmpty()) {
-                discussPost.setTitle(discussPostSearchHit.getHighlightField("title").get(0));
-            }
-            if (!discussPostSearchHit.getHighlightField("content").isEmpty()) {
-                discussPost.setContent(discussPostSearchHit.getHighlightField("content").get(0));
-            }
-            result.add(discussPost);
-        }
-        return result;
+        return searchHits;
     }
 
 }
