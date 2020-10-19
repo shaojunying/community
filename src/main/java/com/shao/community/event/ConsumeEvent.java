@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.security.InvalidParameterException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,12 +33,11 @@ public class ConsumeEvent {
             CommunityConstant.COMMENT_TOPIC, CommunityConstant.FOLLOW_TOPIC})
     public void handleMessage(ConsumerRecord<String, String> consumerRecord) {
         if (consumerRecord == null || consumerRecord.value() == null) {
-            logger.error("消息内容为空!");
-            return;
+            throw new InvalidParameterException("消息内容为空!");
         }
         Event event = JSONObject.parseObject(consumerRecord.value(), Event.class);
         if (event == null) {
-            logger.error("消息格式有误!");
+            throw new InvalidParameterException("解析json字符串consumerRecord.value()出错");
         }
         // 新消息对象,存储事件信息
         Message message = new Message();
