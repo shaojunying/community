@@ -1,9 +1,7 @@
 package com.shao.community.controller;
 
-import com.shao.community.entity.Comment;
-import com.shao.community.entity.DiscussPost;
-import com.shao.community.entity.Page;
-import com.shao.community.entity.User;
+import com.shao.community.entity.*;
+import com.shao.community.event.ProduceEvent;
 import com.shao.community.service.CommentService;
 import com.shao.community.service.DiscussPostService;
 import com.shao.community.service.LikeService;
@@ -43,6 +41,9 @@ public class DiscussPostController {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private ProduceEvent produceEvent;
+
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ResponseBody
     public String postDiscussPost(String title, String content) {
@@ -57,6 +58,15 @@ public class DiscussPostController {
         discussPost.setCreateTime(new Date());
         discussPost.setUserId(user.getId());
         discussPostService.addDiscussPost(discussPost);
+
+        // 向elasticsearch中保存帖子
+        Event event = new Event()
+                .setTopic(CommunityConstant.PUBLISH_TOPIC)
+                .setUserId(user.getId())
+                .setEntityType(CommunityConstant.COMMENT_TO_POST)
+                .setEntityId(discussPost.getId());
+        produceEvent.fireEvent(event);
+
         return CommunityUtil.convertToJson(0, "成功");
     }
 

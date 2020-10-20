@@ -57,8 +57,9 @@
 						</li>
 					</ul>
 					<!-- 搜索 -->
-					<form action="site/search.html" class="form-inline my-2 my-lg-0">
-						<input aria-label="Search" class="form-control mr-sm-2" type="search"/>
+					<form class="form-inline my-2 my-lg-0" method="get" th:action="@{/search}">
+						<input aria-label="Search" class="form-control mr-sm-2" name="keyword" th:value="${keyword}"
+							   type="search"/>
 						<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
 					</form>
 				</div>
@@ -80,7 +81,7 @@
 					</li>
 				</ul>
 				<button class="btn btn-primary btn-sm position-absolute rt-0" data-target="#publishModal"
-						data-toggle="modal" th:if="${user!=null}" type="button">我要发布
+						data-toggle="modal" th:if="${loggedUser!=null}" type="button">我要发布
 				</button>
 			</div>
 			<!-- 弹出框 -->

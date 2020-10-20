@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 community.iml
+!/kaptcha.jpg

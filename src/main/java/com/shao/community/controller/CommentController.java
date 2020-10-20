@@ -72,7 +72,14 @@ public class CommentController {
             event.setEntityUserId(event.getUserId());
         }
         produceEvent.fireEvent(event);
-
+        if (entityType == CommunityConstant.COMMENT_TO_POST) {
+            Event publishEvent = new Event()
+                    .setTopic(CommunityConstant.PUBLISH_TOPIC)
+                    .setEntityId(comment.getEntityId())
+                    .setEntityType(CommunityConstant.COMMENT_TO_POST)
+                    .setUserId(user.getId());
+            produceEvent.fireEvent(publishEvent);
+        }
         return String.format("redirect:/discuss-post?id=%d", postId);
     }
 

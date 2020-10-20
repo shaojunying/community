@@ -1,8 +1,11 @@
 package com.shao.community.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shao.community.entity.DiscussPost;
 import com.shao.community.entity.Event;
 import com.shao.community.entity.Message;
+import com.shao.community.service.DiscussPostService;
+import com.shao.community.service.ElasticsearchService;
 import com.shao.community.service.MessageService;
 import com.shao.community.util.CommunityConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -28,6 +31,12 @@ public class ConsumeEvent {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private DiscussPostService discussPostService;
+
+    @Autowired
+    private ElasticsearchService elasticsearchService;
 
     @KafkaListener(topics = {CommunityConstant.LIKE_TOPIC,
             CommunityConstant.COMMENT_TOPIC, CommunityConstant.FOLLOW_TOPIC})
@@ -58,5 +67,22 @@ public class ConsumeEvent {
         }
         message.setContent(JSONObject.toJSONString(content));
         messageService.insertMessage(message);
+    }
+
+    @KafkaListener(topics = {CommunityConstant.PUBLISH_TOPIC})
+    public void saveDiscussPostToElasticsearch(ConsumerRecord<String, String> consumerRecord) {
+        if (consumerRecord == null || consumerRecord.value() == null) {
+            throw new InvalidParameterException("消息内容为空!");
+        }
+        Event event = JSONObject.parseObject(consumerRecord.value(), Event.class);
+        if (event == null) {
+            throw new InvalidParameterException("解析json字符串consumerRecord.value()出错");
+        }
+        int postId = event.getEntityId();
+        DiscussPost discussPost = discussPostService.findDiscussPost(postId);
+        if (discussPost == null) {
+            throw new RuntimeException("要查询的帖子不存在");
+        }
+        elasticsearchService.save(discussPost);
     }
 }
