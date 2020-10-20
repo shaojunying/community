@@ -54,6 +54,7 @@ public class ElasticsearchService {
     public SearchHits<DiscussPost> search(String text, int current, int limit) {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.multiMatchQuery(text, "title", "content"))
+                .withSort(SortBuilders.fieldSort("_score").order(SortOrder.DESC))
                 .withSort(SortBuilders.fieldSort("type").order(SortOrder.DESC))
                 .withSort(SortBuilders.fieldSort("score").order(SortOrder.DESC))
                 .withSort(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
