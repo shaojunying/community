@@ -42,7 +42,7 @@ public class ElasticsearchServiceTest {
 
     @Test
     public void search() {
-        SearchHits<DiscussPost> searchHits = elasticsearchService.search("一条测试的帖子", 0, 100);
+        SearchHits<DiscussPost> searchHits = elasticsearchService.search("的", 0, 1000);
         System.out.println(searchHits.getTotalHits());
         List<SearchHit<DiscussPost>> searchHitList = searchHits.getSearchHits();
         List<DiscussPost> result = new LinkedList<>();
