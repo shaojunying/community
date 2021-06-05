@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  app:
+    image: maven:3.6.1-jdk-8-alpine
+    command: sh -c "mvn clean package -Dmaven.test.skip=true && java -jar target/community-0.0.1-SNAPSHOT.jar"
+    ports:
+      - 8080:8080
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: todos
+
+  mysql:
+    image: mysql:5.7
+    # command: sh -c "mysql -u root -proot community < /docker-entrypoint-initdb.d/init_schema.sql && mysql -u root -proot community < /docker-entrypoint-initdb.d/init_data.sql"
+    restart: always
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: community
+
+  redis:
+    image: redis
+    
+
+# volumes:
+#   todo-mysql-data:

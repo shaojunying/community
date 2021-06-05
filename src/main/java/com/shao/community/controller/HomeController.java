@@ -84,7 +84,7 @@ public class HomeController {
         }
         model.addAttribute("discussPosts", discussPosts);
         model.addAttribute("page", page);
-        return "/index";
+        return "index";
 
     }
 
