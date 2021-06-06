@@ -90,12 +90,12 @@ public class HomeController {
 
     @RequestMapping(path = "register", method = RequestMethod.GET)
     public String getRegisterPage() {
-        return "/site/register";
+        return "site/register";
     }
 
     @RequestMapping(path = "login", method = RequestMethod.GET)
     public String getLoginPage() {
-        return "/site/login";
+        return "site/login";
     }
 
     @RequestMapping(path = "register", method = RequestMethod.POST)
@@ -111,7 +111,7 @@ public class HomeController {
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             model.addAttribute("emailMsg", map.get("emailMsg"));
-            return "/site/register";
+            return "site/register";
         }
     }
 
@@ -137,7 +137,7 @@ public class HomeController {
             default:
                 break;
         }
-        return "/site/operate-result";
+        return "site/operate-result";
     }
 
     @RequestMapping(path = "kaptcha", method = RequestMethod.GET)
@@ -173,13 +173,13 @@ public class HomeController {
         }
         if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptcha)) {
             model.addAttribute("codeMsg", "请输入验证码");
-            return "/site/login";
+            return "site/login";
         }
 
         // 检查验证码是否正确
         if (!code.equalsIgnoreCase(kaptcha)) {
             model.addAttribute("codeMsg", "验证码错误,请重新输入");
-            return "/site/login";
+            return "site/login";
         }
 
         // 获取ticket存储时间
@@ -196,7 +196,7 @@ public class HomeController {
             if (passwordMsg != null) {
                 model.addAttribute(PASSWORD_MESSAGE, passwordMsg);
             }
-            return "/site/login";
+            return "site/login";
         } else {
             // 登录成功,返回ticket,跳转到首页
             String ticket = (String) map.get(TICKET);

@@ -68,18 +68,18 @@ public class UserController {
         // 上传图片
         if (uploadImage == null) {
             model.addAttribute("error", "您还没有选择图片");
-            return "/site/setting";
+            return "site/setting";
         }
         // 提取后缀名
         String filename = uploadImage.getOriginalFilename();
         if (filename == null) {
             model.addAttribute("error", "图片格式不正确,请重新选择");
-            return "/site/setting";
+            return "site/setting";
         }
         int index = filename.lastIndexOf(".");
         if (index == -1) {
             model.addAttribute("error", "图片格式不正确,请重新选择");
-            return "/site/setting";
+            return "site/setting";
         }
         String suffix = filename.substring(index);
         filename = CommunityUtil.generateUUID() + suffix;
