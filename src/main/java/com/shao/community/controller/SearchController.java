@@ -59,11 +59,11 @@ public class SearchController {
 
         System.out.println(searchHits.getTotalHits());
         page.setRows((int) searchHits.getTotalHits());
-        page.setPath("/search?keyword=" + keyword);
+        page.setPath("search?keyword=" + keyword);
 
         model.addAttribute("ans", ans);
         model.addAttribute("keyword", keyword);
-        return "/site/search";
+        return "site/search";
     }
 
     private List<DiscussPost> getDiscussPostsFromSearchHist(SearchHits<DiscussPost> searchHits) {

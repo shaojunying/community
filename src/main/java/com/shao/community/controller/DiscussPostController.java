@@ -75,7 +75,7 @@ public class DiscussPostController {
         DiscussPost discussPost = discussPostService.findDiscussPost(id);
         if (discussPost == null) {
             model.addAttribute("text", "要查询的帖子不存在,即将跳转到首页");
-            model.addAttribute("target", "/index");
+            model.addAttribute("target", "index");
             return "site/operate-result";
         }
         model.addAttribute(discussPost);
@@ -92,7 +92,7 @@ public class DiscussPostController {
         model.addAttribute("postLikesCount", postLikesCount);
 
         // 查询帖子的评论
-        page.setPath(String.format("/discuss-post?id=%d", id));
+        page.setPath(String.format("discuss-post?id=%d", id));
         page.setRows(discussPost.getCommentCount());
         page.setLimit(5);
         List<Comment> comments = commentService.findComments(CommunityConstant.COMMENT_TO_POST,

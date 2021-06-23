@@ -56,30 +56,30 @@ public class UserController {
     private FollowService followService;
 
     @LoginRequired
-    @RequestMapping(path = "/setting", method = RequestMethod.GET)
+    @RequestMapping(path = "setting", method = RequestMethod.GET)
     public String updateUserInfo() {
         return "site/setting";
     }
 
     @LoginRequired
-    @RequestMapping(path = "/upload", method = RequestMethod.POST)
+    @RequestMapping(path = "upload", method = RequestMethod.POST)
     public String uploadImage(MultipartFile uploadImage, Model model) throws IOException {
         User user = hostHolder.getUser();
         // 上传图片
         if (uploadImage == null) {
             model.addAttribute("error", "您还没有选择图片");
-            return "/site/setting";
+            return "site/setting";
         }
         // 提取后缀名
         String filename = uploadImage.getOriginalFilename();
         if (filename == null) {
             model.addAttribute("error", "图片格式不正确,请重新选择");
-            return "/site/setting";
+            return "site/setting";
         }
         int index = filename.lastIndexOf(".");
         if (index == -1) {
             model.addAttribute("error", "图片格式不正确,请重新选择");
-            return "/site/setting";
+            return "site/setting";
         }
         String suffix = filename.substring(index);
         filename = CommunityUtil.generateUUID() + suffix;
@@ -92,7 +92,7 @@ public class UserController {
             throw e;
         }
         // 更新用户头像路径
-        String headerUrl = domainPath + "/user/header/" + filename;
+        String headerUrl = domainPath + "user/header/" + filename;
         userService.updateHeaderUrl(user.getId(), headerUrl);
         return "redirect:/index";
     }
@@ -154,7 +154,7 @@ public class UserController {
         newPassword = CommunityUtil.md5(newPassword + user.getSalt());
         userService.updatePassword(user.getId(), newPassword);
         model.addAttribute("text", "修改密码成功,即将跳转到首页");
-        model.addAttribute("target", "/index");
+        model.addAttribute("target", "index");
         return "site/operate-result";
     }
 

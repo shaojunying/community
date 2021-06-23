@@ -59,7 +59,7 @@ public class MessageController {
     public String getMessages(Model model, Page page) {
         User user = hostHolder.getUser();
 
-        page.setPath("/message");
+        page.setPath("message");
         // 会话列表中总会话个数
         int messagesRows = messageService.selectLatestMessagesRowsWithEveryUser(user.getId());
         page.setRows(messagesRows);
@@ -101,12 +101,12 @@ public class MessageController {
         String[] strings = conversationId.split("_");
         if (strings.length != 2 || (Integer.parseInt(strings[0]) != user.getId() && Integer.parseInt(strings[1]) != user.getId())) {
             model.addAttribute("text", "访问非法,将跳转到首页");
-            model.addAttribute("target", "/index");
+            model.addAttribute("target", "index");
             return "site/operate-result";
         }
         int user1 = Integer.parseInt(strings[0]);
         int user2 = Integer.parseInt(strings[1]);
-        page.setPath(String.format("/message/detail/%s", conversationId));
+        page.setPath(String.format("message/detail/%s", conversationId));
         int rows = messageService.selectMessagesRows(conversationId);
         page.setRows(rows);
         int anotherUserId = user1 == user.getId() ? user2 : user1;
