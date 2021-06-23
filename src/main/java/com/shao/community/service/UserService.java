@@ -107,7 +107,7 @@ public class UserService {
         context.setVariable("email", user.getEmail());
         String url = domain + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
-        String content = templateEngine.process("/mail/activation", context);
+        String content = templateEngine.process("mail/activation", context);
 
         mailClient.sendMail(user.getEmail(), "验证邮件", content);
         return map;

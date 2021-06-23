@@ -63,7 +63,7 @@ public class NoticeController {
         Map<String, Object> followNoticeMap = getNoticeInfo(loggedUser, CommunityConstant.FOLLOW_TOPIC);
         model.addAttribute("followMap", followNoticeMap);
 
-        return "/site/notice";
+        return "site/notice";
     }
 
     /**
@@ -150,7 +150,7 @@ public class NoticeController {
             ans.add(map);
         }
         model.addAttribute("ans", ans);
-        return "/site/notice-detail";
+        return "site/notice-detail";
     }
 
 }

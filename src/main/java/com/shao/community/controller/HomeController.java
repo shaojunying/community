@@ -61,7 +61,7 @@ public class HomeController {
     private final String PASSWORD_MESSAGE = "passwordMsg";
 
 
-    @RequestMapping(path = "/index", method = RequestMethod.GET)
+    @RequestMapping(path = "index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page) {
         page.setRows(discussPostService.findDiscussPostsRows(0));
         page.setPath("/index");
@@ -84,18 +84,18 @@ public class HomeController {
         }
         model.addAttribute("discussPosts", discussPosts);
         model.addAttribute("page", page);
-        return "/index";
+        return "index";
 
     }
 
     @RequestMapping(path = "register", method = RequestMethod.GET)
     public String getRegisterPage() {
-        return "/site/register";
+        return "site/register";
     }
 
     @RequestMapping(path = "login", method = RequestMethod.GET)
     public String getLoginPage() {
-        return "/site/login";
+        return "site/login";
     }
 
     @RequestMapping(path = "register", method = RequestMethod.POST)
@@ -104,40 +104,40 @@ public class HomeController {
         if (map == null || map.size() == 0) {
             // 注册成功
             model.addAttribute("text", "注册成功,我们向您发送了激活邮件,请尽快激活.");
-            model.addAttribute("target", "/index");
-            return "/site/operate-result";
+            model.addAttribute("target", "index");
+            return "site/operate-result";
         } else {
             // 注册失败 在注册页显示错误信息
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             model.addAttribute("emailMsg", map.get("emailMsg"));
-            return "/site/register";
+            return "site/register";
         }
     }
 
-    @RequestMapping(path = "/activation/{userId}/{activationCode}", method = RequestMethod.GET)
+    @RequestMapping(path = "activation/{userId}/{activationCode}", method = RequestMethod.GET)
     public String activate(@PathVariable int userId, @PathVariable String activationCode, Model model) {
         int result = userService.activate(userId, activationCode);
         switch (result) {
             case CommunityConstant.ACTIVATION_SUCCESS:
                 // 注册成功
                 model.addAttribute("text", "激活成功,请登录!");
-                model.addAttribute("target", "/login");
+                model.addAttribute("target", "login");
                 break;
             case CommunityConstant.ACTIVATION_REPEAT:
                 // 重复激活
                 model.addAttribute("text", "账号已激活,请登录!");
-                model.addAttribute("target", "/login");
+                model.addAttribute("target", "login");
                 break;
             case CommunityConstant.ACTIVATION_FAILURE:
                 // 激活失败
                 model.addAttribute("text", "激活失败,请重试!");
-                model.addAttribute("target", "/index");
+                model.addAttribute("target", "index");
                 break;
             default:
                 break;
         }
-        return "/site/operate-result";
+        return "site/operate-result";
     }
 
     @RequestMapping(path = "kaptcha", method = RequestMethod.GET)
@@ -173,13 +173,13 @@ public class HomeController {
         }
         if (StringUtils.isBlank(code) || StringUtils.isBlank(kaptcha)) {
             model.addAttribute("codeMsg", "请输入验证码");
-            return "/site/login";
+            return "site/login";
         }
 
         // 检查验证码是否正确
         if (!code.equalsIgnoreCase(kaptcha)) {
             model.addAttribute("codeMsg", "验证码错误,请重新输入");
-            return "/site/login";
+            return "site/login";
         }
 
         // 获取ticket存储时间
@@ -196,7 +196,7 @@ public class HomeController {
             if (passwordMsg != null) {
                 model.addAttribute(PASSWORD_MESSAGE, passwordMsg);
             }
-            return "/site/login";
+            return "site/login";
         } else {
             // 登录成功,返回ticket,跳转到首页
             String ticket = (String) map.get(TICKET);

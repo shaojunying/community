@@ -2,7 +2,7 @@ version: "1.0"
 
 services:
     app:
-        image: maven:3.6.1-jdk-8-alpine
+        image: maven:3.6.1-jdk-8
         # 这里-Dspring.profiles.active=docker一定要在jar文件之前，否则无法识别
         command: sh -c "java -jar -Dspring.profiles.active=docker target/community-0.0.1-SNAPSHOT.jar"
         ports:

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <contextName>community</contextName>
-    <property name="LOG_PATH" value="C:/Users/shao/Documents"/>
-    <property name="APPDIR" value=".community"/>
+    <!-- 之前是windows的绝对路径，修改成linux下的绝对路径 -->
+    <property name="LOG_PATH" value="/var/log"/>
+    <property name="APPDIR" value="community"/>
 
     <!-- error file -->
     <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">

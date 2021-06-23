@@ -85,6 +85,12 @@ public class MessageController {
             int messagesRows1 = messageService.selectMessagesRows(conversationId);
             map.put("messageRows", messagesRows1);
             map.put("message", message);
+            // 这里可能查询不到指定的用户
+            User anotherUser = userService.findUserById(anotherUserId);
+            if (anotherUser == null){
+                // 查询不到该用户
+                continue;
+            }
             map.put("user", userService.findUserById(anotherUserId));
             conversations.add(map);
         }
@@ -101,7 +107,7 @@ public class MessageController {
         String[] strings = conversationId.split("_");
         if (strings.length != 2 || (Integer.parseInt(strings[0]) != user.getId() && Integer.parseInt(strings[1]) != user.getId())) {
             model.addAttribute("text", "访问非法,将跳转到首页");
-            model.addAttribute("target", "/index");
+            model.addAttribute("target", "index");
             return "site/operate-result";
         }
         int user1 = Integer.parseInt(strings[0]);

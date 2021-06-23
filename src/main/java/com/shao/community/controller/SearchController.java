@@ -63,7 +63,7 @@ public class SearchController {
 
         model.addAttribute("ans", ans);
         model.addAttribute("keyword", keyword);
-        return "/site/search";
+        return "site/search";
     }
 
     private List<DiscussPost> getDiscussPostsFromSearchHist(SearchHits<DiscussPost> searchHits) {
