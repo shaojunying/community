@@ -59,7 +59,7 @@ public class MessageController {
     public String getMessages(Model model, Page page) {
         User user = hostHolder.getUser();
 
-        page.setPath("message");
+        page.setPath("/message");
         // 会话列表中总会话个数
         int messagesRows = messageService.selectLatestMessagesRowsWithEveryUser(user.getId());
         page.setRows(messagesRows);
@@ -85,6 +85,12 @@ public class MessageController {
             int messagesRows1 = messageService.selectMessagesRows(conversationId);
             map.put("messageRows", messagesRows1);
             map.put("message", message);
+            // 这里可能查询不到指定的用户
+            User anotherUser = userService.findUserById(anotherUserId);
+            if (anotherUser == null){
+                // 查询不到该用户
+                continue;
+            }
             map.put("user", userService.findUserById(anotherUserId));
             conversations.add(map);
         }
@@ -106,7 +112,7 @@ public class MessageController {
         }
         int user1 = Integer.parseInt(strings[0]);
         int user2 = Integer.parseInt(strings[1]);
-        page.setPath(String.format("message/detail/%s", conversationId));
+        page.setPath(String.format("/message/detail/%s", conversationId));
         int rows = messageService.selectMessagesRows(conversationId);
         page.setRows(rows);
         int anotherUserId = user1 == user.getId() ? user2 : user1;

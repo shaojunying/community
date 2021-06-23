@@ -116,7 +116,7 @@ public class NoticeController {
         int noticesCount = messageService.selectNoticesCount(loggedUser.getId(), topic);
         page.setRows(noticesCount);
         page.setLimit(5);
-        page.setPath("notice/" + topic);
+        page.setPath("/notice/" + topic);
 
         List<Message> messageList = messageService.selectNotices(loggedUser.getId(), topic, page.getOffset(), page.getLimit());
 

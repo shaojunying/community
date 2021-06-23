@@ -77,7 +77,7 @@ public class FollowController {
         }
         model.addAttribute("user", user);
         page.setRows((int) followService.getFolloweeCount(userId, CommunityConstant.COMMENT_TO_USER));
-        page.setPath("followee/" + userId);
+        page.setPath("/followee/" + userId);
         page.setLimit(5);
         List<Map<String, Object>> followee = followService.getFollowee(userId, CommunityConstant.COMMENT_TO_USER, page.getOffset(), page.getLimit());
         // 如果当前用户登录,需要判断其对每个用户的关注状态
@@ -101,7 +101,7 @@ public class FollowController {
         }
         model.addAttribute("user", user);
         page.setRows((int) followService.getFollowerCount(CommunityConstant.COMMENT_TO_USER, userId));
-        page.setPath("follower/" + userId);
+        page.setPath("/follower/" + userId);
         page.setLimit(5);
         List<Map<String, Object>> follower = followService.getFollower(CommunityConstant.COMMENT_TO_USER, userId, page.getOffset(), page.getLimit());
         // 如果当前用户登录,需要判断其对每个用户的关注状态
