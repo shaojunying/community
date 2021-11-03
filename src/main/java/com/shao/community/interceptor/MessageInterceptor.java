@@ -32,6 +32,8 @@ public class MessageInterceptor implements HandlerInterceptor {
         }
         int unreadMessagesRows = messageService.selectUnreadMessagesRows(user.getId(), null);
         int unreadNoticesCount = messageService.selectUnreadNoticesCount(user.getId(), null);
-        modelAndView.addObject("allUnreadCount", unreadMessagesRows + unreadNoticesCount);
+        if (modelAndView != null) {
+            modelAndView.addObject("allUnreadCount", unreadMessagesRows + unreadNoticesCount);
+        }
     }
 }

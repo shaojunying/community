@@ -1,3 +1,9 @@
+# 1.0.1(2021.10.26)
+
+## fix: 点赞时产生空指针异常。
+
+点赞时调用的是Restful接口，这种接口的modelAndView为null，进而导致messageInterceptor产生空指针异常。
+
 # 1.0(2021.6.23)
 ## fix
 - 修改路径前的斜线
