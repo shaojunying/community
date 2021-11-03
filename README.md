@@ -42,33 +42,33 @@
 
 ### 项目的修改日志
 
-[修改日志](./CHANGELOG.md)
+[修改日志](doc/CHANGELOG.md)
 
 ## 运行截图
 
 ### 网站首页
 
-![首页](img/home.png)
+![首页](doc/img/home.png)
 
 ### 帖子详情页
 
-![帖子详情页](img/post_detail.png)
+![帖子详情页](doc/img/post_detail.png)
 
 
 ### 发帖页面
 
-![发帖页](img/post.png)
+![发帖页](doc/img/post.png)
 
 
 ### 个人中心页
 
-![个人中心页](img/profile.png)
+![个人中心页](doc/img/profile.png)
 
 
 ### 私信列表页
 
-![私信列表页](img/message_and_notice.png)
+![私信列表页](doc/img/message_and_notice.png)
 
 ### 与某人的聊天记录页
 
-![与某人的聊天记录](img/message_list.png)
+![与某人的聊天记录](doc/img/message_list.png)
